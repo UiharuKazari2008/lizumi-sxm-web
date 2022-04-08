@@ -1,0 +1,66 @@
+div
+    div.mb-3.d-flex.row
+        .col.me-1.d-flex
+
+        .col-auto.ms-1
+            a.btn.btn-secondary(href='#' onClick=`getJobs(${page})`).me-1
+                i.fas.fa-refresh
+            if (pageCount > 1)
+                .btn-group
+                    a.btn.btn-secondary(href='#' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getJobs(${page - 1})`)
+                        i.fas.fa-chevron-left
+                    .btn.btn-secondary
+                        | #{page} / #{pageCount}
+                    a.btn.btn-secondary(href='#' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getJobs(${page + 1})`)
+                        i.fas.fa-chevron-right
+
+    if (jobList && jobList.length > 0)
+        each job in jobList
+            .list-group
+                .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(job.active) ? 'list-group-item-danger' : (job.qeued) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
+                    .row.d-flex.justify-content-between.mb-2.mb-sm-0
+                        .col.d-flex.align-items-center
+                            - console.log(job.event)
+                            if (job.event && job.event.channelInfo)
+                                .badge.bg-dark
+                                    span.text-monospace #{job.event.channel}
+                                    span.small.ps-1 #{job.event.channelInfo.name}
+                            else if (job.ch)
+                                .badge.bg-dark
+                                    span.text-monospace #{job.ch}
+                            if (job.status === 0)
+                                .badge.bg-danger.ms-1
+                                    span.text-monospace Waiting
+                            else if (job.status === 1)
+                                .badge.bg-warning.ms-1
+                                    span.text-monospace Queued
+                            else if (job.status === 2)
+                                .badge.bg-success.ms-1
+                                    span.text-monospace Active
+                            if (job.liveRec)
+                                .badge.bg-danger.ms-1
+                                    span.text-monospace LIVE
+                            else if (job.liveRec)
+                                .badge.bg-success.ms-1
+                                    span.text-monospace LIVE
+
+                            if (job.switch_source && job.switch_source === true)
+                                i.fas.fa-headphones.ms-2
+
+                        .col-auto.d-flex.align-items-center
+                            //i.fas.fa-certificate.me-2
+                            //small #{event.niceDate}
+                    .row.d-flex.justify-content-between
+                        .col
+                            if (job.name)
+                                span #{job.name}
+                            else if (job.event && job.event.event && job.event.event.filename)
+                                span #{job.event.event.filename}
+                            else if (job.time)
+                                span #{job.time}
+                        .col-auto.d-flex.align-items-center
+                            if (job.guid)
+                                a.px-2(onClick=`cancelJob("${job.guid}")`)
+                                    i.fas.fa-trash-alt
+    else
+        h3 No Jobs
