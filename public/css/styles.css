@@ -3988,6 +3988,12 @@ textarea.form-control-lg {
     transition: none;
   }
 }
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+
 .nav-link:hover, .nav-link:focus {
   color: #ffffff;
 }
@@ -11326,6 +11332,7 @@ textarea.form-control-lg {
 html,
 body {
   height: 100%;
+  scrollbar-width: none;
 }
 
 #layoutAuthentication {
