@@ -122,7 +122,7 @@ function simpleAuth(req, res, next) {
 }
 
 // setup routing
-router.get('/', function(req, res, next) {
+router.get('/', simpleAuth, function(req, res, next) {
   res.render('dashboard', {})
 })
 
