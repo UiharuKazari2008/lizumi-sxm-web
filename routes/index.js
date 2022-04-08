@@ -15,7 +15,7 @@ async function getDeviceStatus() {
   let timeoutTime = 30000
   await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/status/devices`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/devices`,
       timeout: 60000
     }, async function (err, resReq, body) {
       if (err) {
@@ -39,7 +39,7 @@ async function getDeviceStatus() {
 
   await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/status/events`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/events`,
       timeout: 60000
     }, async function (err, resReq, body) {
       if (err) {
@@ -62,7 +62,7 @@ async function getDeviceStatus() {
   })
   await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/status/jobs`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/jobs`,
       timeout: 60000
     }, async function (err, resReq, body) {
       if (err) {
@@ -85,7 +85,7 @@ async function getDeviceStatus() {
   })
   await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/status/channels`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/channels`,
       timeout: 60000
     }, async function (err, resReq, body) {
       if (err) {
@@ -278,7 +278,7 @@ router.get('/jobList', async (req, res) => {
 router.get('/setSource/:tuner', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/source/${req.params.tuner}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/source/${req.params.tuner}`,
       timeout: 5000
     }, async function (err, resReq, body) {
       if (err) {
@@ -304,7 +304,7 @@ router.get('/setSource/:tuner', async (req, res) => {
 router.get('/tuneChannel/:channel', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/tune/${req.params.channel}?${(req.query.tuner) ? 'tuner=' + req.query.tuner : ''}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/tune/${req.params.channel}?${(req.query.tuner) ? 'tuner=' + req.query.tuner : ''}`,
       timeout: 15000
     }, async function (err, resReq, body) {
       if (err) {
@@ -330,7 +330,7 @@ router.get('/tuneChannel/:channel', async (req, res) => {
 router.get('/deTuneTuner/:tuner', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/detune/${req.params.tuner}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/detune/${req.params.tuner}`,
       timeout: 5000
     }, async function (err, resReq, body) {
       if (err) {
@@ -356,7 +356,7 @@ router.get('/deTuneTuner/:tuner', async (req, res) => {
 router.get('/pendRequestTuner/:tuner', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/pending/add?tuner=${req.params.tuner}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?tuner=${req.params.tuner}`,
       timeout: 5000
     }, async function (err, resReq, body) {
       if (err) {
@@ -381,7 +381,7 @@ router.get('/pendRequestTuner/:tuner', async (req, res) => {
 router.get('/pendRequestGuid/:guid', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/pending/add?guid=${req.params.guid}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?guid=${req.params.guid}`,
       timeout: 60000
     }, async function (err, resReq, body) {
       if (err) {
@@ -406,7 +406,7 @@ router.get('/pendRequestGuid/:guid', async (req, res) => {
 router.get('/cancelJob/:guid', async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
-      url: `http://${config.backend}/pending/remove?guid=${req.params.guid}`,
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/remove?guid=${req.params.guid}`,
       timeout: 5000
     }, async function (err, resReq, body) {
       if (err) {
