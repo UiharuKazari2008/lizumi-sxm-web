@@ -30,6 +30,8 @@ const channelsBody = $("#channelList")
 
 function openTuner(device, digital) {
     let options = []
+    if (key.length > 0)
+        options.push(key)
     if (device)
         options.push(`tuner=${device}`)
     if (digital)
@@ -55,6 +57,8 @@ function openTuner(device, digital) {
 function tuneChannel(channel, device, warning) {
     channelsModel.modal('hide');
     let options = []
+    if (key.length > 0)
+        options.push(key)
     if (device)
         options.push(`tuner=${device}`)
     $.ajax({

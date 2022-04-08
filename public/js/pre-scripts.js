@@ -1,3 +1,6 @@
+const searchParams = new URLSearchParams(document.location.search);
+const key = (searchParams.get('key')) ? 'key=' + searchParams.get('key') : ''
+
 function startStatusUpdater() {
     getTunersStatus();
     setInterval(getTunersStatus, 10000);
@@ -8,7 +11,7 @@ function getTunersStatus() {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/deviceStatus`,
+            url: `/deviceStatus?${key}`,
             type: "GET",
             data: '',
             processData: false,
@@ -25,8 +28,6 @@ function getTunersStatus() {
     return false;
 }
 
-
-
 function getPlaylist(page, filter) {
     $("#tableContent").removeClass("d-none");
     $("#tabPlaylist").addClass("active");
@@ -34,6 +35,8 @@ function getPlaylist(page, filter) {
     $("#tabJobs").removeClass("active");
     let playlistFilterOptions = []
     if (document.getElementById("tableContent")) {
+        if (key.length > 0)
+            playlistFilterOptions.push(key)
         const optionType = document.querySelector("#playlistFilterType > label input:checked")
         const optionFilter = document.querySelector("#setPlaylistFilterChannel > .active")
         if (optionType)
@@ -71,6 +74,8 @@ function getJobs(page) {
 
     if (document.getElementById("tableJobs")) {
         let playlistFilterOptions = []
+        if (key.length > 0)
+            playlistFilterOptions.push(key)
         if (page)
             playlistFilterOptions.push(`page=${page}`)
         $.ajax({
@@ -96,7 +101,7 @@ function setSource(tunerId) {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/setSource/${tunerId}`,
+            url: `/setSource/${tunerId}?${key}`,
             type: "GET",
             data: '',
             processData: false,
@@ -118,7 +123,7 @@ function deTuneTuner(tunerId) {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/deTuneTuner/${tunerId}`,
+            url: `/deTuneTuner/${tunerId}?${key}`,
             type: "GET",
             data: '',
             processData: false,
@@ -139,7 +144,7 @@ function recordThisTuner(tunerId) {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/pendRequestTuner/${tunerId}`,
+            url: `/pendRequestTuner/${tunerId}?${key}`,
             type: "GET",
             data: '',
             processData: false,
@@ -159,7 +164,7 @@ function recordThisGUID(guid) {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/pendRequestGuid/${guid}`,
+            url: `/pendRequestGuid/${guid}?${key}`,
             type: "GET",
             data: '',
             processData: false,
@@ -179,7 +184,7 @@ function cancelJob(guid) {
     if (document.getElementById("deviceStatus")) {
         $.ajax({
             async: true,
-            url: `/cancelJob/${guid}`,
+            url: `/cancelJob/${guid}?${key}`,
             type: "GET",
             data: '',
             processData: false,

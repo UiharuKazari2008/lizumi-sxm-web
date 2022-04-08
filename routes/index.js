@@ -111,12 +111,22 @@ async function getDeviceStatus() {
 getDeviceStatus()
 
 
+function simpleAuth(req, res, next) {
+  if (config.key) {
+    if (!req.query.key)
+      res.status(401).send("No Auth Provided")
+    if (req.query.key && req.query.key !== config.key)
+      res.status(401).send("Invalid Auth Provided")
+  }
+  next();
+}
+
 // setup routing
 router.get('/', function(req, res, next) {
   res.render('dashboard', {})
 })
 
-router.get('/deviceStatus', async (req, res) => {
+router.get('/deviceStatus', simpleAuth, async (req, res) => {
   if (deviceStatus.length > 0) {
     res.status(200).render('dashboard-tuners', { tuners: deviceStatus, msToTime: function (s) {
         // Pad to 2 or 3 digits, default is 2
@@ -138,7 +148,7 @@ router.get('/deviceStatus', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/channelsList', async (req, res) => {
+router.get('/channelsList', simpleAuth, async (req, res) => {
   if (channelList.length > 0) {
     res.status(200).render('model-channels', {
       channels: channelList,
@@ -149,7 +159,7 @@ router.get('/channelsList', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/eventList', async (req, res) => {
+router.get('/eventList', simpleAuth, async (req, res) => {
   if (eventItems.length > 0) {
     let limit = 45
     let start = 0
@@ -212,7 +222,7 @@ router.get('/eventList', async (req, res) => {
     })
   }
 });
-router.get('/jobList', async (req, res) => {
+router.get('/jobList', simpleAuth, async (req, res) => {
   if (eventItems.length > 0) {
     let limit = 45
     let start = 0
@@ -275,7 +285,7 @@ router.get('/jobList', async (req, res) => {
     })
   }
 });
-router.get('/setSource/:tuner', async (req, res) => {
+router.get('/setSource/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/source/${req.params.tuner}`,
@@ -301,7 +311,7 @@ router.get('/setSource/:tuner', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/tuneChannel/:channel', async (req, res) => {
+router.get('/tuneChannel/:channel', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/tune/${req.params.channel}?${(req.query.tuner) ? 'tuner=' + req.query.tuner : ''}`,
@@ -327,7 +337,7 @@ router.get('/tuneChannel/:channel', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/deTuneTuner/:tuner', async (req, res) => {
+router.get('/deTuneTuner/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/detune/${req.params.tuner}`,
@@ -353,7 +363,7 @@ router.get('/deTuneTuner/:tuner', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/pendRequestTuner/:tuner', async (req, res) => {
+router.get('/pendRequestTuner/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?tuner=${req.params.tuner}`,
@@ -378,7 +388,7 @@ router.get('/pendRequestTuner/:tuner', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/pendRequestGuid/:guid', async (req, res) => {
+router.get('/pendRequestGuid/:guid', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?guid=${req.params.guid}`,
@@ -403,7 +413,7 @@ router.get('/pendRequestGuid/:guid', async (req, res) => {
     res.status(500).send("Backend Failure")
   }
 });
-router.get('/cancelJob/:guid', async (req, res) => {
+router.get('/cancelJob/:guid', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/remove?guid=${req.params.guid}`,
