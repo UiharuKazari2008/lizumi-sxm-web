@@ -102,7 +102,7 @@ div
                                     | STANDBY
                 .card-footer.d-flex.align-items-center.justify-content-between.p-2.bg-black
                     .btn-group
-                        a.btn.btn-dark(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active) ? 'disabled' : ''}`)
+                        a.btn.btn-dark(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? 'disabled' : ''}`)
                             i.fas.fa-headphones
                         a.btn.btn-dark(href='#' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
                             i.fas.fa-hashtag
