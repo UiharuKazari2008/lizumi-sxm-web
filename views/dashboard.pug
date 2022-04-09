@@ -24,12 +24,13 @@ head
 
 body(style="overflow-x: hidden;")
     .container-fluid.p-0
-        div#deviceStatus.row.p-3
-            .col-xl-3.col-md-6
-                script.
-                    startStatusUpdater();
-                    //getTunersStatus();
-                | Loading Radios...
+        div#deviceStatus.pt-3
+            .row.p-3
+                .col-xl-3.col-md-6
+                    script.
+                        startStatusUpdater();
+                        //getTunersStatus();
+                    | Loading Radios...
         .card.mb-4(style="border: 0px; border-radius: 0;")
             .card-header
                 ul.nav.nav-tabs.card-header-tabs
@@ -60,6 +61,21 @@ body(style="overflow-x: hidden;")
                     | ...
                 .modal-footer.bg-black.border-0
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+    #renameFile.modal(tabindex='-1' role='dialog')
+        .modal-dialog.modal-dialog-centered(role='document')
+            .modal-content
+                .modal-header
+                    h5.modal-title Update Filename
+                    button.close(type='button' data-dismiss='modal' aria-label='Close')
+                        span(aria-hidden='true') &times;
+                .modal-body
+                    input#renameFileChannel.form-control.d-none(type='text' placeholder='' readonly)
+                    input#renameFileGuid.form-control.d-none(type='text' placeholder='' readonly)
+                    input#renameFileInput.form-control(type='text' placeholder='..')
+                .modal-footer
+                    button.btn.btn-success(type='button' onClick="renameFile();") Update
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+
     .d-flex.justify-content-center.align-items-center.position-fixed.w-100.h-100(aria-live='polite' aria-atomic='true' style='z-index: 10; pointer-events: none; min-height: 200px; top: 0;')
         // Then put toasts within
         div#centerNotify.toast(role='alert' aria-live='assertive' aria-atomic='true')

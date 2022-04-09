@@ -128,7 +128,9 @@ router.get('/', simpleAuth, function(req, res, next) {
 
 router.get('/deviceStatus', simpleAuth, async (req, res) => {
   if (deviceStatus.length > 0) {
-    res.status(200).render('dashboard-tuners', { tuners: deviceStatus, msToTime: function (s) {
+    res.status(200).render('dashboard-tuners', {
+      tuners: deviceStatus,
+      msToTime: function (s) {
         // Pad to 2 or 3 digits, default is 2
         function pad(n, z) {
           z = z || 2;
@@ -143,7 +145,9 @@ router.get('/deviceStatus', simpleAuth, async (req, res) => {
         var hrs = (s - mins) / 60;
 
         return [pad(hrs), pad(mins), pad(secs)];
-      } })
+      },
+      eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000))
+    })
   } else {
     res.status(500).send("Backend Failure")
   }
@@ -437,6 +441,32 @@ router.get('/cancelJob/:guid', simpleAuth, async (req, res) => {
     res.status(200).send(response)
   } else {
     res.status(500).send("Backend Failure")
+  }
+});
+router.get('/updateFileName', simpleAuth, async (req, res) => {
+  if (req.query.ch && req.query.ch.length > 0 &&
+      req.query.guid && req.query.guid.length > 0 &&
+      req.query.filename && req.query.filename.length > 0) {
+    const response = await new Promise((resolve) => {
+      request.get({
+        url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/metadata/update?ch=${req.query.ch}&guid=${req.query.guid}&filename=${encodeURIComponent(decodeURIComponent(req.query.filename))}`,
+        timeout: 5000
+      }, async function (err, resReq, body) {
+        if (err) {
+          console.error(err);
+          resolve(false)
+        } else {
+          resolve(body)
+        }
+      })
+    })
+    if (response) {
+      res.status(200).send(response)
+    } else {
+      res.status(500).send("Backend Failure")
+    }
+  } else {
+    res.status(400).send('Missing Required Data')
   }
 });
 

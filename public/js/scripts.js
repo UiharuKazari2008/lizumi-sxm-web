@@ -25,8 +25,12 @@
 
 });*/
 
-const channelsModel = $("#channelTune")
-const channelsBody = $("#channelList")
+const channelsModel = $("#channelTune");
+const channelsBody = $("#channelList");
+const renameModel = $("#renameFile");
+const renameGuid = $("#renameFileGuid");
+const renameInput = $("#renameFileInput");
+const renameChannel = $("#renameFileChannel");
 
 function openTuner(device, digital) {
     let options = []
@@ -81,24 +85,59 @@ function tuneChannel(channel, device, warning) {
     return false;
 }
 
+function openRename(filename, ch, guid) {
+    if (filename && guid && ch) {
+        renameGuid[0].value = guid;
+        renameChannel[0].value = ch;
+        renameInput[0].value = filename;
+        renameModel.modal('show');
+    }
+    return false;
+}
+function renameFile() {
+    if (renameInput[0].value && renameInput[0].value.trim().length > 0) {
+        renameModel.modal('hide');
+        $.ajax({
+            async: true,
+            url: `/updateFileName?ch=${renameChannel[0].value}&guid=${renameGuid[0].value}&filename=${encodeURIComponent(renameInput[0].value.trim())}`,
+            type: "GET",
+            data: '',
+            processData: false,
+            contentType: false,
+            headers: {},
+            success: function (response, textStatus, xhr) {
+                notifyCenter("success", "Rename", "", `Updated filename to\n"${renameInput[0].value.trim()}"`)
+            },
+            error: function (xhr) {
+                notifyCenter("danger", "Rename", "", `Failed to update filename`)
+            }
+        });
+    } else {
+        notifyCenter("danger", "Rename", "", `Invalid Filename`)
+    }
+    return false;
+}
+
+
 function notifyCenter(type, title, sub, message) {
     const header = $("#centerNotify > .toast-header")
     switch (type) {
         case 'success':
-            header.attr("class", "toast-header border-0 bg-success text-white")
+            header.attr("class", "toast-header border-0 bg-success text-white");
             break;
         case 'warning':
-            header.attr("class", "toast-header border-0 bg-warning text-white")
+            header.attr("class", "toast-header border-0 bg-warning text-white");
             break;
         case 'danger':
-            header.attr("class", "toast-header border-0 bg-danger text-white")
+            header.attr("class", "toast-header border-0 bg-danger text-white");
             break;
         default:
-            header.attr("class", "toast-header border-0 bg-black text-white")
+            header.attr("class", "toast-header border-0 bg-black text-white");
             break;
     }
-    $("#centerNotify > .toast-header > strong.mr-auto").text(title)
-    $("#centerNotify > .toast-header > small").text(sub)
-    $("#centerNotify > .toast-body > span").text(message)
-    $("#centerNotify").toast('show')
+    $("#centerNotify > .toast-header > strong.mr-auto").text(title);
+    $("#centerNotify > .toast-header > small").text(sub);
+    $("#centerNotify > .toast-body > span").text(message);
+    $("#centerNotify").toast('show');
+    return false;
 }

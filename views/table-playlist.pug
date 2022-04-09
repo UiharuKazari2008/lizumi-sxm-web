@@ -88,8 +88,9 @@ div
                                 i.fas.fa-certificate.me-2
                             span #{event.event.filename}
                         .col-auto.d-flex.align-items-center
-                            a.px-2(onClick=`editMetadata("${event.event.guid}")`)
-                                i.fas.fa-edit
+                            if (event.channelInfo)
+                                a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
+                                    i.fas.fa-edit
                             //a.px-2(onClick=`playItem("${event.event.guid}")`).disabled
                                 i.fas.fa-play
                             a.px-2(onClick=`recordThisGUID("${event.event.guid}")`)
