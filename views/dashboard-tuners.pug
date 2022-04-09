@@ -3,7 +3,7 @@ div
         .row.px-3.pb-1
             .px-4
                 each event in eventList
-                    .row.p-0.d-flex.align-content-center.mb-2
+                    .row.p-0.d-flex.align-content-center.mb-2(style='flex-wrap: revert;')
                         .col.p-0.me-1
                             .alert(role='alert' class=`${(event.event.duration === 0) ? 'alert-danger' : 'alert-warning'}`).d-flex.align-items-center.p-1.mb-0
                                 if (event.event.duration === 0)
