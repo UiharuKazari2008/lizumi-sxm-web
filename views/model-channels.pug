@@ -2,9 +2,10 @@ div
     .card
         ul.list-group.list-group-flush
             each channel in channels
-                a.list-group-item.bg-dark.text-white.d-flex(href='#' onClick=`tuneChannel("${channel.number}"${(tuner) ? ', "' + tuner + '"' : ', undefined'}${(!digital && tuner && channel.supportedDevices.indexOf(tuner) === -1) ? ', true' : ', false'});`)
+                a.list-group-item.bg-dark.text-white.d-flex(href='#' style=`${(channel.color) ? 'background: ' + channel.color + '!important;' : ''}` onClick=`tuneChannel("${channel.number}"${(tuner) ? ', "' + tuner + '"' : ', undefined'}${(!digital && tuner && channel.supportedDevices.indexOf(tuner) === -1) ? ', true' : ', false'});`)
                     .col.p-0
-                        | #{channel.name}
+                        img(src=`data:image/png;base64,${channel.image}` height="24px")
+                        span.ps-2 #{channel.name}
                     .col-auto.p-0
                         if (!digital && tuner && channel.supportedDevices.indexOf(tuner) === -1)
                             .badge.bg-warning.text-monospace.text-black.me-1
