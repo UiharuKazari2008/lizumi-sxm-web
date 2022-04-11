@@ -35,19 +35,19 @@ div
                             span #{tuner.name}
                         .col-auto.d-flex.p-0.align-items-center
                             if (tuner.working)
-                                .small.text-black.card-header-pills.badge.bg.bg-white
+                                .small.text-white.card-header-pills.badge.bg.bg-danger.ms-1
                                     i.fas.fa-lock.pe-1
                                     span Recording
                                     if (tuner.working && tuner.working.jobCount > 1)
                                         span.ps-1 (#{tuner.working.jobCount})
                             else if (tuner.locked)
-                                .small.text-white.card-header-pills.badge.bg.bg-black
+                                .small.text-white.card-header-pills.badge.bg.bg-black.ms-1
                                     i.fas.fa-lock.pe-1
                                     span Locked
                             if (tuner.active)
                                 .small.text-black.card-header-pills.badge.bg.bg-white.ms-1
                                     i.fas.fa-headphones.pe-1
-                                    span Now Playing
+                                    span Active
                     .card-body.position-relative.w-100.h-100(style=`padding: 0.7em;`)
                         //if (tuner.channel && tuner.channel.image)
                             div.position-absolute(style="top: 0; left: 0; padding: 0.7em; height: inherit; width: inherit;")
@@ -57,20 +57,26 @@ div
                             div(style=((tuner.channel && tuner.channel.image) ? `background-image: url("data:image/png;base64,${tuner.channel.image}"); background-size: contain; background-repeat: no-repeat; background-position: center right;` : ''))
                                 h4.text-overflow
                                     if (tuner.channel)
-                                        span.badge.bg-black.font-digital(style="margin-right: 0.5em") #{tuner.channel.number}
+                                        span.badge.bg-black.font-digital(style="margin-right: 0.5em")
+                                            if (tuner.channel.number.length <= 1)
+                                                | 0
+                                            if (tuner.channel.number.length <= 2)
+                                                | 0
+                                            | #{tuner.channel.number}
                                         span.overflow-hidden #{tuner.channel.name}
                                     else
                                         span.badge.bg-black.font-digital(style="margin-right: 0.5em") --
                                 if (tuner.nowPlaying)
                                     each line in tuner.nowPlaying.text
                                         p.m-0.text-overflow #{line}
-                                    if (tuner.nowPlaying.text < 2)
+                                    if (tuner.nowPlaying.text === 1)
                                         p.m-0.text-overflow ​
-                                    if (tuner.nowPlaying.text < 1)
+                                    if (tuner.nowPlaying.text === 0)
                                         p.m-0.text-overflow ​
                                 else
                                     p.m-0.text-overflow ​
                                     p.m-0.text-overflow ​
+                            div
                                 if (tuner.working)
                                     if (tuner.working.timeLeft)
                                         .m-0.text-overflow.align-items-center.d-flex
@@ -137,7 +143,7 @@ div
                     .card-footer.p-2.bg-black
                         .d-none.d-sm-flex.align-items-center.justify-content-between
                             .btn-group
-                                a.btn.btn-dark(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? 'disabled' : ''}`)
+                                a.btn.btn-dark(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' :'disabled' : ''}` )
                                     i.fas.fa-headphones
                                 a.btn.btn-dark(href='#' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
                                     i.fas.fa-hashtag
@@ -155,7 +161,7 @@ div
                                         i.fas.fa-voicemail
                         .d-sm-none.d-flex.align-items-center.justify-content-between
                             .btn-group
-                                a.btn.btn-dark.btn-sm.px-2(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? 'disabled' : ''}`)
+                                a.btn.btn-dark.btn-sm.px-2(href='#' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' : 'disabled' : ''}`)
                                     i.fas.fa-headphones
                                 a.btn.btn-dark.btn-sm.px-2(href='#' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
                                     i.fas.fa-hashtag
