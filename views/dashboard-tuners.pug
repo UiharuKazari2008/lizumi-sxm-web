@@ -65,13 +65,13 @@ div
                                             | #{tuner.channel.number}
                                         span.overflow-hidden #{tuner.channel.name}
                                     else
-                                        span.badge.bg-black.font-digital(style="margin-right: 0.5em") --
+                                        span.badge.bg-black.font-digital(style="margin-right: 0.5em") ---
                                 if (tuner.nowPlaying)
                                     each line in tuner.nowPlaying.text
                                         p.m-0.text-overflow #{line}
-                                    if (tuner.nowPlaying.text === 1)
+                                    if (tuner.nowPlaying.text.length === 1)
                                         p.m-0.text-overflow ​
-                                    if (tuner.nowPlaying.text === 0)
+                                    if (tuner.nowPlaying.text.length === 0)
                                         p.m-0.text-overflow ​
                                 else
                                     p.m-0.text-overflow ​
