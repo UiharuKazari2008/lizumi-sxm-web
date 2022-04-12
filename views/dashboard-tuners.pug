@@ -53,7 +53,7 @@ div
                             div.position-absolute(style="top: 0; left: 0; padding: 0.7em; height: inherit; width: inherit;")
                                 .position-relative
                                     img.position-absolute(src='data:image/png;base64,' + tuner.channel.image height="96px" style="right: 0;")
-                        div.position-absolute(style="display: contents;")
+                        div.position-absolute(style="display: contents;" class=`background-${tuner.id}`)
                             div(style=((tuner.channel && tuner.channel.image) ? `background-image: url("data:image/png;base64,${tuner.channel.image}"); background-size: contain; background-repeat: no-repeat; background-position: center right;` : ''))
                                 h4.text-overflow
                                     if (tuner.channel)
@@ -66,16 +66,17 @@ div
                                         span.overflow-hidden #{tuner.channel.name}
                                     else
                                         span.badge.bg-black.font-digital(style="margin-right: 0.5em") ---
-                                if (tuner.nowPlaying)
-                                    each line in tuner.nowPlaying.text
-                                        p.m-0.text-overflow #{line}
-                                    if (tuner.nowPlaying.text.length === 1)
+                                div
+                                    if (tuner.nowPlaying)
+                                        each line in tuner.nowPlaying.text
+                                            p.m-0.text-overflow #{line}
+                                        if (tuner.nowPlaying.text.length === 1)
+                                            p.m-0.text-overflow ​
+                                        if (tuner.nowPlaying.text.length === 0)
+                                            p.m-0.text-overflow ​
+                                    else
                                         p.m-0.text-overflow ​
-                                    if (tuner.nowPlaying.text.length === 0)
                                         p.m-0.text-overflow ​
-                                else
-                                    p.m-0.text-overflow ​
-                                    p.m-0.text-overflow ​
                             div
                                 if (tuner.working)
                                     if (tuner.working.timeLeft)
