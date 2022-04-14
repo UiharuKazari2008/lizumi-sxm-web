@@ -289,11 +289,12 @@ router.get('/jobList', simpleAuth, async (req, res) => {
     })
   }
 });
+
 router.get('/setSource/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/source/${req.params.tuner}`,
-      timeout: 5000
+      timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
@@ -319,7 +320,7 @@ router.get('/tuneChannel/:channel', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/tune/${req.params.channel}?${(req.query.tuner) ? 'tuner=' + req.query.tuner : ''}`,
-      timeout: 15000
+      timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
@@ -345,7 +346,7 @@ router.get('/deTuneTuner/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/detune/${req.params.tuner}`,
-      timeout: 5000
+      timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
@@ -371,7 +372,7 @@ router.get('/pendRequestTuner/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?tuner=${req.params.tuner}`,
-      timeout: 5000
+      timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
@@ -421,7 +422,7 @@ router.get('/cancelJob/:guid', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/remove?guid=${req.params.guid}`,
-      timeout: 5000
+      timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
@@ -450,7 +451,7 @@ router.get('/updateFileName', simpleAuth, async (req, res) => {
     const response = await new Promise((resolve) => {
       request.get({
         url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/metadata/update?ch=${req.query.ch}&guid=${req.query.guid}&filename=${encodeURIComponent(decodeURIComponent(req.query.filename))}`,
-        timeout: 5000
+        timeout: 30000
       }, async function (err, resReq, body) {
         if (err) {
           console.error(err);

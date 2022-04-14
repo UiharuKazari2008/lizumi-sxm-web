@@ -1,7 +1,6 @@
 const express = require('express'), // Used for routing https://expressjs.com/
 path = require('path'), // allows path combinations https://www.npmjs.com/package/path
 favicon = require('serve-favicon'), // serves the favicon from spec. folder https://www.npmjs.com/package/serve-favicon
-logger = require('morgan'), // logs errors and output to terminal during node run https://www.npmjs.com/package/morgan
 cookieParser = require('cookie-parser'), // allows cookie parsing https://www.npmjs.com/package/cookie-parser
 bodyParser = require('body-parser'), // allos parsing of req.body in POST requests https://www.npmjs.com/package/body-parser
 session = require('express-session'), // express session storage... just using in-memory sessions https://www.npmjs.com/package/express-session
@@ -20,7 +19,6 @@ var app = express(); // sets app to use express
 app.set('views', path.join(__dirname, 'views')); // sets up view directory
 app.set('view engine', 'pug'); // sets view engine to use pug
 //app.use(favicon(path.join(__dirname, 'public', 'images', 'icons', 'favicon-96.png'))); // sets favicon path
-app.use(logger('dev')); // uses morgan/logger to log output to terminal
 app.use(bodyParser.json()); // uses bodyParser to parse req
 app.use(bodyParser.urlencoded({ extended : true })); // Parses the text as URL encoded data, extended extends UTF chars
 app.use(cookieParser('secret')); // sets the session secret
