@@ -24,7 +24,7 @@ async function getDeviceStatus() {
         resolve(false)
       } else {
         try {
-          console.log("Updated Status")
+          //console.log("Updated Status")
           deviceStatus = JSON.parse(body)
           tunerList = deviceStatus.filter(e => e.history)
           resolve(true)
@@ -50,7 +50,7 @@ async function getDeviceStatus() {
       } else {
         try {
           eventItems = JSON.parse(body)
-          console.log("Updated Events")
+          //console.log("Updated Events")
           resolve(true)
         } catch (err) {
           console.error(err)
@@ -72,7 +72,7 @@ async function getDeviceStatus() {
         resolve([])
       } else {
         try {
-          console.log("Updated Jobs")
+          //console.log("Updated Jobs")
           jobItems = JSON.parse(body)
           resolve([])
         } catch (err) {
@@ -95,7 +95,7 @@ async function getDeviceStatus() {
         resolve([])
       } else {
         try {
-          console.log("Updated Channels")
+          //console.log("Updated Channels")
           channelList = JSON.parse(body)
           resolve([])
         } catch (err) {
