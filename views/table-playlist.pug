@@ -75,7 +75,7 @@ div
                                 span.badge.bg-danger.me-2(tooltip="Live: This event has no duration at this time but can be recorded") LIVE
                             else if (event.time)
                                 span.badge.bg-dark.me-2 #{event.time}
-                            small #{event.niceDate}
+                            span.small(tooltip=event.date) #{event.niceDate}
                     .row.d-flex.justify-content-between
                         .col
                             if ((event.event.duration && event.event.duration < 60) || (Date.now() - event.event.syncStart) < 60000)
