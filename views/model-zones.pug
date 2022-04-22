@@ -1,0 +1,14 @@
+div
+    .card
+        ul.list-group.list-group-flush
+            each zone in zones
+                li.list-group-item
+                    div
+                        h3 !{zone.name}
+                    div
+                        each speaker, si in zone.speakers
+                            - console.log(speaker)
+                            .btn-group.btn-group-sm(role='group')
+                                a.btn(type='button' class=`${(speaker.state) ? 'btn-success' : (speaker.state === undefined) ? 'btn-danger disabled' : 'btn-secondary'}` onClick=`zoneSwap('${zone.name}', ${si})`) !{speaker.name}
+                                a.btn(type='button' class=`${(speaker.state) ? 'btn-success disabled' : (speaker.state === undefined) ? 'btn-danger disabled' : 'btn-secondary'}` onClick=`zoneAdd('${zone.name}', ${si})`)
+                                    i.fas.fa-plus

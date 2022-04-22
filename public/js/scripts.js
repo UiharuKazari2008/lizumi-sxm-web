@@ -1,12 +1,3 @@
-/*!
-    * Start Bootstrap - SB Admin v7.0.5 (https://startbootstrap.com/template/sb-admin)
-    * Copyright 2013-2022 Start Bootstrap
-    * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-sb-admin/blob/master/LICENSE)
-    */
-    // 
-// Scripts
-// 
-
 /*window.addEventListener('DOMContentLoaded', event => {
 
     // Toggle the side navigation
@@ -27,6 +18,8 @@
 
 const channelsModel = $("#channelTune");
 const channelsBody = $("#channelList");
+const zonesModel = $("#zoneManager");
+const zonesBody = $("#zoneContent");
 const renameModel = $("#renameFile");
 const renameGuid = $("#renameFileGuid");
 const renameInput = $("#renameFileInput");
@@ -54,6 +47,28 @@ function openTuner(device, digital) {
         },
         error: function (xhr) {
             notifyCenter("danger", "Tune", "", `Failed to get channel list`)
+        }
+    });
+    return false;
+}
+function openZones() {
+    let options = []
+    if (key.length > 0)
+        options.push(key)
+    $.ajax({
+        async: true,
+        url: `/zoneList?${options.join('&')}`,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, xhr) {
+            zonesBody.html($(response).children());
+            zonesModel.modal('show');
+        },
+        error: function (xhr) {
+            notifyCenter("danger", "Tune", "", `Failed to get zone manager`)
         }
     });
     return false;

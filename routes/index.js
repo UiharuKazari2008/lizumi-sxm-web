@@ -4,15 +4,16 @@ const request = require("request");
 const config = require("./../config.json");
 var router = express.Router();
 let deviceStatus = []
+let roomStatus = {}
 let channelList = []
 let tunerList = []
 let eventItems = []
 let jobItems = {}
 
-let updateTimer = null
-async function getDeviceStatus() {
-  clearTimeout(updateTimer);
-  let timeoutTime = 30000
+let timerDeviceStatus = null;
+async function updateDeviceStatus() {
+  clearTimeout(timerDeviceStatus);
+  timerDeviceStatus = null;
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/devices`,
@@ -20,7 +21,6 @@ async function getDeviceStatus() {
     }, async function (err, resReq, body) {
       if (err) {
         console.error(err);
-        timeoutTime = 5000
         resolve(false)
       } else {
         try {
@@ -30,13 +30,38 @@ async function getDeviceStatus() {
           resolve(true)
         } catch (err) {
           console.error(err)
-          timeoutTime = 5000
           resolve(false)
         }
       }
     })
   })
+  await new Promise((resolve) => {
+    request.get({
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/rooms`,
+      timeout: 60000
+    }, async function (err, resReq, body) {
+      if (err) {
+        resolve(false)
+      } else {
+        try {
+          //console.log("Updated Status")
+          roomStatus = JSON.parse(body)
+          resolve(true)
+        } catch (err) {
+          console.error(err)
+          resolve(false)
+        }
+      }
+    })
+  })
+  timerDeviceStatus = setTimeout( updateDeviceStatus, 30000)
+}
+updateDeviceStatus();
 
+let updateTimer = null
+async function getDeviceStatus() {
+  clearTimeout(updateTimer);
+  let timeoutTime = 30000
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/events`,
@@ -158,6 +183,15 @@ router.get('/channelsList', simpleAuth, async (req, res) => {
       channels: channelList,
       tuner: req.query.tuner,
       digital: (req.query.digital && req.query.digital === "true"),
+    })
+  } else {
+    res.status(500).send("Backend Failure")
+  }
+});
+router.get('/zoneList', simpleAuth, async (req, res) => {
+  if (roomStatus) {
+    res.status(200).render('model-zones', {
+      zones: Object.values(roomStatus)
     })
   } else {
     res.status(500).send("Backend Failure")

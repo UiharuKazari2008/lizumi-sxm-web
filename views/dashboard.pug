@@ -36,17 +36,24 @@ body(style="overflow-x: hidden;")
                 ul.nav.nav-tabs.card-header-tabs
                     li.nav-item
                         a#tabPlaylist.nav-link.active(href='#' onClick=`getPlaylist();`)
-                            i.fas.fa-th-list.pe-1
-                            | Playlist
+                            i.fas.fa-th-list
+                            span.ps-1.d-none.d-sm-inline Playlist
+                    li.nav-item
+                        a#tabSchedule.nav-link(href='#' onClick=`getSchedules();`)
+                            i.fas.fa-calendar
+                            span.ps-1.d-none.d-sm-inline Schedule
                     li.nav-item
                         a#tabJobs.nav-link(href='#' onClick=`getJobs();`)
-                            i.fas.fa-cog.pe-1
-                            | Jobs
+                            i.fas.fa-cog
+                            span.ps-1.d-none.d-sm-inline Jobs
                     li.nav-item.ms-auto
-                        .dropdown
-                            a.btn.btn-light.btn-sm(href='#' onClick=`openTuner();`)
-                                i.fas.fa-hashtag.pe-1
-                                | Direct Tune
+                        a.btn.btn-light.btn-sm(href='#' onClick=`openTuner();`)
+                            i.fas.fa-hashtag
+                            span.ps-1.d-none.d-sm-inline  Tune
+                        a.btn.btn-light.btn-sm.ms-1(href='#' onClick=`openZones();`)
+                            i.fas.fa-volume-up
+                            span.ps-1.d-none.d-sm-inline Zones
+
             div#tableJobs.card-body.d-none
                 h5.card-title Loading Jobs...
             div#tableContent.card-body
@@ -58,6 +65,13 @@ body(style="overflow-x: hidden;")
         .modal-dialog.modal-dialog-centered(role='document')
             .modal-content
                 #channelList.modal-body.bg-black
+                    | ...
+                .modal-footer.bg-black.border-0
+                    button.btn.btn-secondary(type='button' data-dismiss='modal') Close
+    #zoneManager.modal.fade(tabindex='-1' role='dialog' aria-labelledby='zoneManagerTitle' aria-hidden='true')
+        .modal-dialog.modal-dialog-centered(role='document')
+            .modal-content
+                #zoneContent.modal-body.bg-black
                     | ...
                 .modal-footer.bg-black.border-0
                     button.btn.btn-secondary(type='button' data-dismiss='modal') Close
@@ -81,7 +95,7 @@ body(style="overflow-x: hidden;")
         div#centerNotify.toast(role='alert' aria-live='assertive' aria-atomic='true')
             .toast-header.border-0
                 strong.mr-auto Bootstrap
-                small 11 mins ago
+                small NaN
                 button.ml-2.mb-1.close(type='button' data-dismiss='toast' aria-label='Close')
                     span(aria-hidden='true') &times;
             .toast-body.border-0.bg-dark.text-white
