@@ -35,7 +35,7 @@ async function updateDeviceStatus() {
       }
     })
   })
-  await new Promise((resolve) => {
+  /*await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/rooms`,
       timeout: 60000
@@ -53,7 +53,7 @@ async function updateDeviceStatus() {
         }
       }
     })
-  })
+  })*/
   timerDeviceStatus = setTimeout( updateDeviceStatus, 30000)
 }
 updateDeviceStatus();
