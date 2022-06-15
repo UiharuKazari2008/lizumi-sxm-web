@@ -12,23 +12,17 @@ body(style="overflow-x: hidden;")
 
         ul#appTitleMenu
 
+        div#appNavigation
+            if (page > 1)
+                a.bottomBtn.btn.btn-lg.btn-circle.red(title="Previous Page" href='#_' role='button' accesskey="," onClick=`getJobs(${page - 1}); return false;`)
+                    i.fas.fa-arrow-left
+            a#refreshPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Refresh Page" href='#_' onClick=`getJobs(${page}); return false;`)
+                i.fa.fa-sync
+            if (page < pageCount)
+                a#nextPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Next Page" href='#_' onclick=`getJobs(${page + 1}); return false;`)
+                    i.fa.fa-arrow-right
         div#appContent
             div
-                div.mb-3.d-flex.row
-                    .col.me-1.d-flex
-
-                    .col-auto.ms-1
-                        a.btn.btn-secondary(href='#_' onClick=`getJobs(${page})`).me-1
-                            i.fas.fa-refresh
-                        if (pageCount > 1)
-                            .btn-group
-                                a.btn.btn-secondary(href='#_' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getJobs(${page - 1})`)
-                                    i.fas.fa-chevron-left
-                                .btn.btn-secondary
-                                    | #{page} / #{pageCount}
-                                a.btn.btn-secondary(href='#_' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getJobs(${page + 1})`)
-                                    i.fas.fa-chevron-right
-
                 if (jobList && jobList.length > 0)
                     each job in jobList
                         .list-group

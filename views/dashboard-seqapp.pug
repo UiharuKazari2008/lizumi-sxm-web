@@ -18,6 +18,26 @@ body(style="overflow-x: hidden;")
                     background-image: url("!{baseUrl}/assets/img/seq-bg.jpg");
                 }
             script(src=`${baseUrl}js/seq-pre-scripts.js`)
+        div#appPanels
+            div#radioManagerChannels(class="collapse" data-parent="#menuAccordion")
+                div.position-relative.pt-3.pr-3.pl-3.user-menu-height(style="width: 100%;")
+                    .d-flex.w-100
+                        a(class="btn btn-primary collapsed" data-toggle="collapse" data-target=`#menuItemMain`)
+                            i.fas.fa-arrow-left.fa-fw
+                        a(class="btn btn-primary" title="Show All Channels" href='#_' onclick='openTuner(); return false;').ml-2
+                            i.fas.fa-ellipsis.fa-fw.mr-md-1
+                            span.d-none.d-md-inline All Channels
+                        h4.text-primary.ml-auto
+                            i.fas.fa-hashtag.mr-2
+                            | Tune
+                    .row.w-100.position-absolute.pb-3(style='bottom: 0;').d-flex.justify-content-center
+                        if (channels && channels.length > 0)
+                            .menu-grid(style='overflow-x: scroll; overflow-y:hidden; white-space: nowrap;')
+                                each channel in channels
+                                    a.user-menu-item.user-menu-small(title=`Tune to ${channel.number}` href='#_' onClick=`tuneChannel("${channel.number}");`)
+                                        img(src=`data:image/png;base64,${channel.image}` style='height: 3em;')
+                        else
+                            h2 No Channels Available!
         div#appStaticPost
             #channelTune.modal.fade(tabindex='-1' role='dialog' aria-labelledby='channelTuneTitle' aria-hidden='true')
                 .modal-dialog.modal-dialog-centered(role='document')
@@ -52,10 +72,15 @@ body(style="overflow-x: hidden;")
             i.far.mr-2.fa-satellite
             span.text-uppercase Devices
 
-        //div#appNavigator
+        div#appNavigation
+            a#refreshPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Refresh Page" href='#_' onClick="getTunersStatus(); return false;")
+                i.fa.fa-sync
 
         div#appMenuRow2Grid
-            a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
+            //a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
+                i.fa-light.fa-hashtag.fa-fw
+                | Tune
+            a.user-menu-item(title="Open Tuner Menu" href='#_' class="collapsed" data-toggle="collapse" data-target="#radioManagerChannels")
                 i.fa-light.fa-hashtag.fa-fw
                 | Tune
             a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)

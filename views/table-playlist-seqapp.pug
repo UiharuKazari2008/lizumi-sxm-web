@@ -9,7 +9,15 @@ body(style="overflow-x: hidden;")
         div#appTitleBar
             i.far.mr-2.fa-list-music
             span.text-uppercase Playlist
-
+        div#appNavigation
+            if (page > 1)
+                a.bottomBtn.btn.btn-lg.btn-circle.red(title="Previous Page" href='#_' role='button' accesskey="," onClick=`getPlaylist(${page - 1}); return false;`)
+                    i.fas.fa-arrow-left
+            a#refreshPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Refresh Page" href='#_' onClick=`getPlaylist(${page}); return false;`)
+                i.fa.fa-sync
+            if (page < pageCount)
+                a#nextPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Next Page" href='#_' onclick=`getPlaylist(${page + 1}); return false;`)
+                    i.fa.fa-arrow-right
         ul#appTitleMenu
             li.nav-item.no-arrow
                 div#playlistFilterType.btn-group.btn-group-toggle(style="display: contents;" data-toggle='buttons')
@@ -47,22 +55,6 @@ body(style="overflow-x: hidden;")
                                         span #{tuner.name}
         div#appContent
             div
-                div.mb-3.d-flex.row
-                    .col.mr-1.d-flex
-
-
-                    .col-auto.ml-1
-                        a.btn.btn-secondary(href='#_' onClick=`getPlaylist(${page})`).mr-1
-                            i.fas.fa-refresh
-                        if (pageCount > 1)
-                            .btn-group
-                                a.btn.btn-secondary(href='#_' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getPlaylist(${page - 1})`)
-                                    i.fas.fa-chevron-left
-                                .btn.btn-secondary
-                                    | #{page} / #{pageCount}
-                                a.btn.btn-secondary(href='#_' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getPlaylist(${page + 1})`)
-                                    i.fas.fa-chevron-right
-
                 if (eventList && eventList.length > 0)
                     each event in eventList
                         .list-group

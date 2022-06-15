@@ -150,7 +150,8 @@ function simpleAuth(req, res, next) {
 router.get(['/', '/devices'], simpleAuth, function(req, res, next) {
   if (req.header("Seq-BaseURL")) {
     res.render('dashboard-seqapp', {
-      baseUrl: req.header("Seq-BaseURL")
+      baseUrl: req.header("Seq-BaseURL"),
+      channels: config.favorite_channels.map(e => channelList.filter(f => f.number === e)[0])
     })
   } else {
     res.render('dashboard', {})
