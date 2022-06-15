@@ -18,30 +18,30 @@ div
                 button#setPlaylistFilterChannelButton.btn.dropdown-toggle(type='button' data-toggle="dropdown" aria-haspopup='true' aria-expanded='false' class=`${(filter !== "all") ? 'btn-primary' : 'btn-secondary'}`)
                     i.fas.fa-filter
                 div#setPlaylistFilterChannel.dropdown-menu(aria-labelledby='setPlaylistFilterChannelButton')
-                    a.dropdown-item(href='#' data-typeId=`all` onClick=`getPlaylist(1, "all")` class=`${(filter === "all") ? 'active' : ''}`) Show All
+                    a.dropdown-item(href='#_' data-typeId=`all` onClick=`getPlaylist(1, "all")` class=`${(filter === "all") ? 'active' : ''}`) Show All
                     if (channels && channels.length > 0)
                         .dropdown-divider
                         .dropdown-header Channels
                         each channel in channels
-                            a.dropdown-item(href='#' id=`filter-ch-${channel.number}` data-typeId=`ch-${channel.number}` onClick=`getPlaylist(1, "ch-${channel.number}")` class=`${(filter === "ch-" + channel.number) ? 'active' : ''}`)
+                            a.dropdown-item(href='#_' id=`filter-ch-${channel.number}` data-typeId=`ch-${channel.number}` onClick=`getPlaylist(1, "ch-${channel.number}")` class=`${(filter === "ch-" + channel.number) ? 'active' : ''}`)
                                 span.text-monospace #{channel.number}
                                 span.small.text-muted.ps-1 #{channel.name}
                     if (tuners && tuners.length > 0)
                         .dropdown-divider
                         .dropdown-header Radios
                         each tuner in tuners
-                            a.dropdown-item(href='#' id=`filter-tuner-${tuner.id}` data-typeId=`tuner-${tuner.id}` onClick=`getPlaylist(1, "tuner-${tuner.id}")` class=`${(filter === "tuner-" + tuner.id) ? 'active' : ''}`)
+                            a.dropdown-item(href='#_' id=`filter-tuner-${tuner.id}` data-typeId=`tuner-${tuner.id}` onClick=`getPlaylist(1, "tuner-${tuner.id}")` class=`${(filter === "tuner-" + tuner.id) ? 'active' : ''}`)
                                 span #{tuner.name}
         .col-auto.ms-1
-            a.btn.btn-secondary(href='#' onClick=`getPlaylist(${page})`).me-1
+            a.btn.btn-secondary(href='#_' onClick=`getPlaylist(${page})`).me-1
                 i.fas.fa-refresh
             if (pageCount > 1)
                 .btn-group
-                    a.btn.btn-secondary(href='#' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getPlaylist(${page - 1})`)
+                    a.btn.btn-secondary(href='#_' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getPlaylist(${page - 1})`)
                         i.fas.fa-chevron-left
                     .btn.btn-secondary
                         | #{page} / #{pageCount}
-                    a.btn.btn-secondary(href='#' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getPlaylist(${page + 1})`)
+                    a.btn.btn-secondary(href='#_' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getPlaylist(${page + 1})`)
                         i.fas.fa-chevron-right
 
     if (eventList && eventList.length > 0)

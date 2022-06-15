@@ -9,7 +9,7 @@ timeout = require('connect-timeout'), // sets the timeout on the app before we s
 compression = require('compression'), // gzip compression for nodejs https://www.npmjs.com/package/compression
 request = require('request'),
 config = require('./config.json'),
-port = process.env.PORT || 3000;
+port = process.env.PORT || 4000;
 
 // import local dependencies
 require('dotenv').config(); // loads CONFIG variables from the .env top-level file

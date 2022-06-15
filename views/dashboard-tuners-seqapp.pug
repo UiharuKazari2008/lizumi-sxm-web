@@ -1,32 +1,9 @@
 div
-    if (eventList && eventList.length > 0)
-        .row.px-3.pb-1
-            .px-4
-                each event in eventList
-                    .row.p-0.d-flex.align-content-center.mb-2(style='flex-wrap: revert;')
-                        .col.p-0.me-1
-                            .alert(role='alert' class=`${(event.event.duration === 0) ? 'alert-danger' : 'alert-warning'}`).d-flex.align-items-center.p-1.mb-0
-                                .col.p-0
-                                    if (event.event.duration === 0)
-                                        .badge.bg-danger.me-2(style="color: white")
-                                            i.fas.fa-circle.pe-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
-                                            | LIVE EVENT
-                                    else
-                                        .badge.bg-success.me-2(style="color: white")
-                                            i.fas.fa-ticket.pe-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
-                                            | NEW EVENT
-                                    span #{event.event.filename}
-                                .col-auto.p-0
-                                    span #{event.niceDate}
-                        .col-auto.p-0
-                            a.btn.btn-sm.btn-danger(onClick=`recordThisGUID("${event.event.guid}")`).text-white.h-100.d-flex.align-items-center
-                                i.fas.fa-voicemail.me-1
-                                | Record
-    .row.p-3.pt-0
+    .row.pt-0
         each tuner in tuners
             .col-xl-4.col-md-6.mb-3
-                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.locked) ? 'bg-danger' : (tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-secondary'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
-                    .row.card-header.align-items-center.m-0.d-none.d-sm-flex
+                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.locked) ? 'bg-danger' : (tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-gray-900 tuner-standby'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
+                    .row.card-header.align-items-center.m-0.d-none.d-sm-flex.bg-transparent
                         .col.small.text-white.d-flex.p-0.align-items-center
                             if (tuner.digital)
                                 i.fas.fa-wifi(style="padding-right: 0.5em")
@@ -35,18 +12,18 @@ div
                             span #{tuner.name}
                         .col-auto.d-flex.p-0.align-items-center
                             if (tuner.working)
-                                .small.text-white.card-header-pills.badge.bg.bg-danger.ms-1
-                                    i.fas.fa-lock.pe-1
+                                .small.text-white.card-header-pills.badge.bg.bg-danger.ml-1
+                                    i.fas.fa-lock.pr-1
                                     span Recording
                                     if (tuner.working && tuner.working.jobCount > 1)
-                                        span.ps-1 (#{tuner.working.jobCount})
+                                        span.pl-1 (#{tuner.working.jobCount})
                             else if (tuner.locked)
-                                .small.text-white.card-header-pills.badge.bg.bg-black.ms-1
-                                    i.fas.fa-lock.pe-1
+                                .small.text-white.card-header-pills.badge.bg.bg-black.ml-1
+                                    i.fas.fa-lock.pr-1
                                     span Locked
                             if (tuner.active)
-                                .small.text-black.card-header-pills.badge.bg.bg-white.ms-1
-                                    i.fas.fa-headphones.pe-1
+                                .small.text-black.card-header-pills.badge.bg.bg-white.ml-1
+                                    i.fas.fa-headphones.pr-1
                                     span Active
                     .card-body.position-relative.w-100.h-100(style=`padding: 0.7em;`)
                         //if (tuner.channel && tuner.channel.image)
@@ -54,7 +31,7 @@ div
                                 .position-relative
                                     img.position-absolute(src='data:image/png;base64,' + tuner.channel.image height="96px" style="right: 0;")
                         div.position-absolute(style="display: contents;" class=`background-${tuner.id}`)
-                            div(style=((tuner.channel && tuner.channel.image) ? `background-image: url("data:image/png;base64,${tuner.channel.image}"); background-size: contain; background-repeat: no-repeat; background-position: center right;` : ''))
+                            div.channel-icon(style=((tuner.channel && tuner.channel.image) ? `background-image: url("data:image/png;base64,${tuner.channel.image}"); background-size: contain; background-repeat: no-repeat; background-position: center right;` : ''))
                                 h4.text-overflow
                                     if (tuner.channel)
                                         span.badge.bg-black.font-digital(style="margin-right: 0.5em")
@@ -81,7 +58,7 @@ div
                                 if (tuner.working)
                                     if (tuner.working.timeLeft)
                                         .m-0.text-overflow.align-items-center.d-flex
-                                            .col.p-0.me-2
+                                            .col.p-0.mr-2
                                                 - timeLeft = msToTime(tuner.working.timeLeft).join(':')
                                                 .progress.bg-black
                                                     .progress-bar.progress-bar-striped.progress-bar-animated.bg-success(role='progressbar' style=`width: ${(tuner.working.elapsedTime / tuner.working.duration) * 100}%` aria-valuenow='25' aria-valuemin='0' aria-valuemax='100')
@@ -104,7 +81,7 @@ div
                                         .m-0.text-overflow.align-items-center.d-flex
                                             .col.p-0
                                                 .badge.bg-white(style="color: red")
-                                                    i.fas.fa-voicemail.pe-1(style="font-size: 0.8em; padding-bottom: 0.05em;")
+                                                    i.fas.fa-voicemail.pr-1(style="font-size: 0.8em; padding-bottom: 0.05em;")
                                                     | LIVE REC
                                             .col-auto.p-0
                                                 script.
@@ -133,15 +110,15 @@ div
                                     .m-0.text-overflow.align-items-center.d-flex
                                         .col.p-0
                                             .badge.bg-white(style="color: red")
-                                                i.fas.fa-circle.pe-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                                i.fas.fa-circle.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
                                                 | LIVE
                                 else
                                     .m-0.text-overflow.align-items-center.d-flex
                                         .col.p-0
                                             .badge.bg-black.text-white
-                                                i.fas.fa-moon.pe-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                                i.fas.fa-moon.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
                                                 | STANDBY
-                    .card-footer.p-2.bg-black
+                    .card-footer.p-2.bg-black.border-0
                         .d-none.d-sm-flex.align-items-center.justify-content-between
                             .btn-group
                                 a.btn.btn-dark(href='#_' tooltip="Listen to this device" onClick=`setSource("${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' :'disabled' : ''}` )
@@ -179,3 +156,83 @@ div
                                     a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Record the current event or song" onClick=`recordThisTuner("${tuner.id}")` class=`${(!tuner.channel || tuner.locked) ? 'disabled' : ''}`)
                                         i.fas.fa-voicemail
 
+    if (eventList && eventList.length > 0)
+        .row.px-3.pl-1
+            h2 Latest Events
+        .row.pl-3.w-100
+            .px-2.w-100
+                each event in eventList
+                    .row.p-0.d-flex.align-content-center.mb-2(style='flex-wrap: revert;')
+                        .col.p-0.mr-1
+                            .alert(role='alert' class=`${(event.event.duration === 0) ? 'alert-danger' : 'alert-warning'}`).d-flex.align-items-center.p-1.mb-0
+                                .col.p-0
+                                    if (event.event.duration === 0)
+                                        .badge.bg-danger.mr-2(style="color: white")
+                                            i.fas.fa-circle.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                            | LIVE EVENT
+                                    else
+                                        .badge.bg-success.mr-2(style="color: white")
+                                            i.fas.fa-ticket.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                            | NEW EVENT
+                                    span #{event.event.filename}
+                                .col-auto.p-0
+                                    span #{event.niceDate}
+                        .col-auto.p-0
+                            a.btn.btn-sm.btn-danger(onClick=`recordThisGUID("${event.event.guid}")`).text-white.h-100.d-flex.align-items-center
+                                i.fas.fa-voicemail.mr-1
+                                | Record
+    if (liveList && liveList.length > 0)
+        .row.px-3.pl-1
+            h2 On Air
+        .row.px-3.pl-1
+            div.w-100
+                each event in liveList
+                    .list-group
+                        .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.queued) ? 'list-group-item-danger' : (event.exists) ? 'list-group-item-success' : (event.event.isEpisode) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
+                            .row.d-flex.justify-content-between.mb-2.mb-sm-0
+                                .col.d-flex.align-items-center
+                                    if (event.channelInfo)
+                                        .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
+                                            span.text-monospace #{event.channel}
+                                            span.small.pl-1 #{event.channelInfo.name}
+                                    else if (event.channel)
+                                        span.badge.bg-success #{event.channel}
+                                    if (!event.event.noTuner && event.tuner)
+                                        span.badge.bg-primary.ml-1 #{event.tuner.name}
+                                    if (event.duplicate)
+                                        i.fas.fa-clone.ml-2(tooltip="Duplicate: has been played before")
+                                    if (event.event.isEpisode)
+                                        i.fas.fa-exclamation-triangle.ml-2(tooltip="Episode: Inaccurate and not guaranteed it occurred\nSometimes the actual event metadata was never pushed, so this is more of a backup and is the very top text that is displayed on 360L radios")
+                                    if (event.exists)
+                                        i.fas.fa-save.ml-2(tooltip="On Disk: Has already been extracted or recorded")
+                                    if (event.queued)
+                                        i.fas.fa-spinner.ml-2(tooltip="Enqueued: This event is attached to a job or is actively being recorded")
+
+                                .col-auto.d-flex.align-items-center
+                                    //i.fas.fa-certificate.mr-2
+                                    if (event.isExtractedDigitally)
+                                        i.fas.fa-wifi.mr-2(tooltip="Recordable: This can be digitally recorded, so act now!")
+                                    if (event.time && event.time === "00:00:00")
+                                        span.badge.bg-danger.mr-2(tooltip="Live: This event has no duration at this time but can be recorded") LIVE
+                                    else if (event.time)
+                                        span.badge.bg-dark.mr-2 #{event.time}
+                                    span.small #{event.niceDate}
+                            .row.d-flex.justify-content-between
+                                .col
+                                    if ((event.event.duration && event.event.duration < 60) || (Date.now() - event.event.syncStart) < 60000)
+                                        i.fas.fa-certificate.mr-2
+                                    else if ((event.event.duration && event.event.duration < 15 * 60) || (Date.now() - event.event.syncStart) < 15 * 60000)
+                                        i.fas.fa-music.mr-2
+                                    else if ((event.event.duration && event.event.duration > 15 * 60) || (Date.now() - event.event.syncStart) > 15 * 60000)
+                                        i.fas.fa-ticket-alt.mr-2
+                                    else
+                                        i.fas.fa-certificate.mr-2
+                                    span #{event.event.filename}
+                                .col-auto.d-flex.align-items-center
+                                    if (event.channelInfo)
+                                        a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
+                                            i.fas.fa-edit
+                                    //a.px-2(onClick=`playItem("${event.event.guid}")`).disabled
+                                        i.fas.fa-play
+                                    a.px-2(onClick=`recordThisGUID("${event.event.guid}")`)
+                                        i.fas.fa-voicemail

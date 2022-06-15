@@ -1,0 +1,184 @@
+@charset "UTF-8";
+#appContainer {
+    margin: 0;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+
+#appContainer .font-digital {
+  font-family: "Digital7", ui-monospace;
+  padding: 0.5em 0.5em 0.3em 0.5em;
+  color: #24ff73!important;
+}
+#appContainer .text-overflow {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+#appContainer .bg-black {
+   --bs-bg-opacity: 1;
+   background-color: black!important;
+ }
+#appContainer .bg-white {
+   --bs-bg-opacity: 1;
+   background-color: white!important;
+ }
+#appContainer .text-black {
+   --bs-bg-opacity: 1;
+   color: black!important;
+ }
+#appContainer .text-white {
+   --bs-bg-opacity: 1;
+   color: white!important;
+}
+
+#appContainer .tuner-standby {
+    opacity: 0.75
+}
+
+@media (max-width: 430px) {
+    .channel-icon {
+        display: initial;
+    }
+}
+
+#setPlaylistFilterChannelButton.active {
+    color: #ff9e00;
+}
+#playlistFilterType > label.active {
+    color: #ff9e00;
+}
+@media (prefers-color-scheme: light) {
+    .menu-open #playlistFilterType > label,
+    .menu-open #setPlaylistFilterChannelButton{
+        opacity: 0.7;
+    }
+
+
+    .menu-open #playlistFilterType > label.active,
+    .menu-open #setPlaylistFilterChannelButton.active {
+        color: white;
+        opacity: 1.0;
+    }
+
+}
+
+#appContainer .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    word-wrap: break-word;
+    background-color: #252525;
+    background-clip: border-box;
+    border: 1px solid #ffffff21;
+    border-radius: 0.25rem;
+}
+#appContainer .card > hr {
+    margin-right: 0;
+    margin-left: 0;
+}
+#appContainer .card > .list-group {
+    border-top: inherit;
+    border-bottom: inherit;
+}
+#appContainer .card > .list-group:first-child {
+    border-top-width: 0;
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
+}
+#appContainer .card > .list-group:last-child {
+    border-bottom-width: 0;
+    border-bottom-right-radius: calc(0.25rem - 1px);
+    border-bottom-left-radius: calc(0.25rem - 1px);
+}
+#appContainer .card > .card-header + .list-group,
+#appContainer .card > .list-group + .card-footer {
+    border-top: 0;
+}
+
+#appContainer .card-body {
+    flex: 1 1 auto;
+    padding: 1rem 1rem;
+}
+
+#appContainer .card-title {
+    margin-bottom: 0.5rem;
+}
+
+#appContainer .card-subtitle {
+    margin-top: -0.25rem;
+    margin-bottom: 0;
+}
+
+#appContainer .card-text:last-child {
+    margin-bottom: 0;
+}
+
+#appContainer .card-link + .card-link {
+    margin-left: 1rem;
+}
+
+#appContainer .card-header {
+    padding: 0.5rem 1rem;
+    margin-bottom: 0;
+    background-color: rgba(255, 255, 255, 0.03);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.13);
+}
+#appContainer .card-header:first-child {
+    border-radius: calc(0.25rem - 1px) calc(0.25rem - 1px) 0 0;
+}
+
+#appContainer .card-footer {
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.03);
+    border-top: 1px solid rgba(0, 0, 0, 0.125);
+}
+#appContainer .card-footer:last-child {
+    border-radius: 0 0 calc(0.25rem - 1px) calc(0.25rem - 1px);
+}
+
+#appContainer .card-header-tabs {
+    margin-right: -0.5rem;
+    margin-bottom: -0.5rem;
+    margin-left: -0.5rem;
+    border-bottom: 0;
+}
+
+#appContainer .card-header-pills {
+    margin-right: -0.5rem;
+    margin-left: -0.5rem;
+}
+
+#appContainer .card-img-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    border-radius: calc(0.25rem - 1px);
+}
+
+#appContainer .card-img,
+#appContainer .card-img-top,
+#appContainer .card-img-bottom {
+    width: 100%;
+}
+
+#appContainer .card-img,
+#appContainer .card-img-top {
+    border-top-left-radius: calc(0.25rem - 1px);
+    border-top-right-radius: calc(0.25rem - 1px);
+}
+
+#appContainer .card-img,
+#appContainer .card-img-bottom {
+    border-bottom-right-radius: calc(0.25rem - 1px);
+    border-bottom-left-radius: calc(0.25rem - 1px);
+}
+
+#appContainer .card-group > .card {
+    margin-bottom: 0.75rem;
+}

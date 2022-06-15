@@ -35,7 +35,7 @@ async function updateDeviceStatus() {
       }
     })
   })
-  /*await new Promise((resolve) => {
+  await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/rooms`,
       timeout: 60000
@@ -53,7 +53,7 @@ async function updateDeviceStatus() {
         }
       }
     })
-  })*/
+  })
   timerDeviceStatus = setTimeout( updateDeviceStatus, 30000)
 }
 updateDeviceStatus();
@@ -147,13 +147,19 @@ function simpleAuth(req, res, next) {
 }
 
 // setup routing
-router.get('/', simpleAuth, function(req, res, next) {
-  res.render('dashboard', {})
+router.get(['/', '/devices'], simpleAuth, function(req, res, next) {
+  if (req.header("Seq-BaseURL")) {
+    res.render('dashboard-seqapp', {
+      baseUrl: req.header("Seq-BaseURL")
+    })
+  } else {
+    res.render('dashboard', {})
+  }
 })
 
 router.get('/deviceStatus', simpleAuth, async (req, res) => {
   if (deviceStatus.length > 0) {
-    res.status(200).render('dashboard-tuners', {
+    res.status(200).render('dashboard-tuners' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       tuners: deviceStatus,
       msToTime: function (s) {
         // Pad to 2 or 3 digits, default is 2
@@ -171,7 +177,8 @@ router.get('/deviceStatus', simpleAuth, async (req, res) => {
 
         return [pad(hrs), pad(mins), pad(secs)];
       },
-      eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000))
+      eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000)),
+      liveList: eventItems.slice(0).filter(e => !e.event.duration)
     })
   } else {
     res.status(500).send("Backend Failure")
@@ -242,7 +249,7 @@ router.get('/eventList', simpleAuth, async (req, res) => {
     if (!req.query.reverse)
       items = items.reverse()
     const pageCount = (limit < items.length) ? (parseInt((items.length / limit).toFixed(0)) + 1) : 1
-    res.status(200).render('table-playlist', {
+    res.status(200).render('table-playlist' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       eventList: items.slice(start, start + limit),
       channels: channelList,
       tuners: tunerList,
@@ -251,7 +258,7 @@ router.get('/eventList', simpleAuth, async (req, res) => {
       filter: req.query.filter || "all"
     })
   } else {
-    res.status(200).render('table-playlist', {
+    res.status(200).render('table-playlist' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       channels: channelList,
       tuners: tunerList,
       page: 1, pageCount: 1,
@@ -309,14 +316,14 @@ router.get('/jobList', simpleAuth, async (req, res) => {
     if (req.query.reverse)
       items = items.reverse()
     const pageCount = (limit < items.length) ? (parseInt((items.length / limit).toFixed(0)) + 1) : 1
-    res.status(200).render('table-jobs', {
+    res.status(200).render('table-jobs' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       jobList: items.slice(start, start + limit),
       page, pageCount,
       type: req.query.type || "0",
       filter: req.query.filter || "all"
     })
   } else {
-    res.status(200).render('table-jobs', {
+    res.status(200).render('table-jobs' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       page: 1, pageCount: 1,
       type: req.query.type || "0",
       filter: req.query.filter || "all"
@@ -328,6 +335,32 @@ router.get('/setSource/:tuner', simpleAuth, async (req, res) => {
   const response = await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/source/${req.params.tuner}`,
+      timeout: 30000
+    }, async function (err, resReq, body) {
+      if (err) {
+        console.error(err);
+        resolve(false)
+      } else {
+        try {
+          console.log(body)
+          await getDeviceStatus();
+          resolve(body)
+        } catch (err) {
+          resolve(false)
+        }
+      }
+    })
+  })
+  if (response) {
+    res.status(200).send(response)
+  } else {
+    res.status(500).send("Backend Failure")
+  }
+});
+router.get('/setOutput/:action/:zone/:index', simpleAuth, async (req, res) => {
+  const response = await new Promise((resolve) => {
+    request.get({
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/output/${req.params.action}/${req.params.zone}/${req.params.index}`,
       timeout: 30000
     }, async function (err, resReq, body) {
       if (err) {

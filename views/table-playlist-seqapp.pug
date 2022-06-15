@@ -1,0 +1,119 @@
+doctype html
+head
+    meta(charset='utf-8')
+    link(rel='icon' type='image/png' sizes='512x512' href='/assets/img/radio.png')
+    title Radio Manager
+
+body(style="overflow-x: hidden;")
+    div
+        div#appTitleBar
+            i.far.mr-2.fa-list-music
+            span.text-uppercase Playlist
+
+        ul#appTitleMenu
+            li.nav-item.no-arrow
+                div#playlistFilterType.btn-group.btn-group-toggle(style="display: contents;" data-toggle='buttons')
+                    label.navbar-item.btn.btn-admin.pl-2.pr-2(class=`${(type === "0") ? 'active' : ''}`)
+                        input(type='radio' name='options' autocomplete='off' data-typeId="0" onClick=`getPlaylist()` checked=(type === "0") ? '' : undefined)
+                        i.fas.fa-empty-set
+                    label.navbar-item.btn.btn-admin.pl-2.pr-2(class=`${(type === "1") ? 'active' : ''}`)
+                        input(type='radio' name='options' autocomplete='off' data-typeId="1" onClick=`getPlaylist()` checked=(type === "1") ? '' : undefined)
+                        i.fas.fa-certificate
+                    label.navbar-item.btn.btn-admin.pl-2.pr-2(class=`${(type === "2") ? 'active' : ''}`)
+                        input(type='radio' name='options' autocomplete='off' data-typeId="2" onClick=`getPlaylist()` checked=(type === "2") ? '' : undefined)
+                        i.fas.fa-music
+                    label.navbar-item.btn.btn-admin.pl-2.pr-2(class=`${(type === "3") ? 'active' : ''}` )
+                        input(type='radio' name='options' autocomplete='off' data-typeId="3" onClick=`getPlaylist()` checked=(type === "3") ? '' : undefined)
+                        i.fas.fa-ticket
+            li.nav-item.no-arrow.ml-2
+                .btn-group(style="display: contents;")
+                    .dropdown.ml-1
+                        button#setPlaylistFilterChannelButton.navbar-item.btn.btn-ice.pl-2.pr-2(type='button' data-toggle="dropdown" aria-haspopup='true' aria-expanded='false' class=`${(filter !== "all") ? 'active' : ''}`)
+                            i.fas.fa-filter
+                        div#setPlaylistFilterChannel.dropdown-menu.shadow.dropdown-menu-right.animated--grow-in(aria-labelledby='setPlaylistFilterChannelButton')
+                            a.dropdown-item(href='#_' data-typeId=`all` onClick=`getPlaylist(1, "all")` class=`${(filter === "all") ? 'active' : ''}`) Show All
+                            if (channels && channels.length > 0)
+                                .dropdown-divider
+                                .dropdown-header Channels
+                                each channel in channels
+                                    a.dropdown-item(href='#_' id=`filter-ch-${channel.number}` data-typeId=`ch-${channel.number}` onClick=`getPlaylist(1, "ch-${channel.number}")` class=`${(filter === "ch-" + channel.number) ? 'active' : ''}`)
+                                        span.text-monospace #{channel.number}
+                                        span.small.text-muted.pl-1 #{channel.name}
+                            if (tuners && tuners.length > 0)
+                                .dropdown-divider
+                                .dropdown-header Radios
+                                each tuner in tuners
+                                    a.dropdown-item(href='#_' id=`filter-tuner-${tuner.id}` data-typeId=`tuner-${tuner.id}` onClick=`getPlaylist(1, "tuner-${tuner.id}")` class=`${(filter === "tuner-" + tuner.id) ? 'active' : ''}`)
+                                        span #{tuner.name}
+        div#appContent
+            div
+                div.mb-3.d-flex.row
+                    .col.mr-1.d-flex
+
+
+                    .col-auto.ml-1
+                        a.btn.btn-secondary(href='#_' onClick=`getPlaylist(${page})`).mr-1
+                            i.fas.fa-refresh
+                        if (pageCount > 1)
+                            .btn-group
+                                a.btn.btn-secondary(href='#_' class=`${(page === 1) ? 'disabled' : ''}` onClick=`getPlaylist(${page - 1})`)
+                                    i.fas.fa-chevron-left
+                                .btn.btn-secondary
+                                    | #{page} / #{pageCount}
+                                a.btn.btn-secondary(href='#_' class=`${(page >= pageCount) ? 'disabled' : ''}` onClick=`getPlaylist(${page + 1})`)
+                                    i.fas.fa-chevron-right
+
+                if (eventList && eventList.length > 0)
+                    each event in eventList
+                        .list-group
+                            .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.queued) ? 'list-group-item-danger' : (event.exists) ? 'list-group-item-success'  : (event.event.isEpisode) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
+                                .row.d-flex.justify-content-between.mb-2.mb-sm-0
+                                    .col.d-flex.align-items-center
+                                        if (event.channelInfo)
+                                            .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
+                                                span.text-monospace #{event.channel}
+                                                span.small.pl-1 #{event.channelInfo.name}
+                                        else if (event.channel)
+                                            span.badge.bg-success #{event.channel}
+                                        if (!event.event.noTuner && event.tuner)
+                                            span.badge.bg-primary.ml-1 #{event.tuner.name}
+                                        if (event.duplicate)
+                                            i.fas.fa-clone.ml-2(tooltip="Duplicate: has been played before")
+                                        if (event.event.isEpisode)
+                                            i.fas.fa-exclamation-triangle.ml-2(tooltip="Episode: Inaccurate and not guaranteed it occurred\nSometimes the actual event metadata was never pushed, so this is more of a backup and is the very top text that is displayed on 360L radios")
+                                        if (event.exists)
+                                            i.fas.fa-save.ml-2(tooltip="On Disk: Has already been extracted or recorded")
+                                        if (event.queued)
+                                            i.fas.fa-spinner.ml-2(tooltip="Enqueued: This event is attached to a job or is actively being recorded")
+
+                                    .col-auto.d-flex.align-items-center
+                                        //i.fas.fa-certificate.mr-2
+                                        if (event.isExtractedDigitally)
+                                            i.fas.fa-wifi.mr-2(tooltip="Recordable: This can be digitally recorded, so act now!")
+                                        if (event.time && event.time === "00:00:00")
+                                            span.badge.bg-danger.mr-2(tooltip="Live: This event has no duration at this time but can be recorded") LIVE
+                                        else if (event.time)
+                                            span.badge.bg-dark.mr-2 #{event.time}
+                                        span.small.mr-1.d-none.d-md-inline #{event.date}
+                                        span.small #{event.niceDate}
+                                .row.d-flex.justify-content-between
+                                    .col
+                                        if ((event.event.duration && event.event.duration < 60) || (Date.now() - event.event.syncStart) < 60000)
+                                            i.fas.fa-certificate.mr-2
+                                        else if ((event.event.duration && event.event.duration < 15 * 60) || (Date.now() - event.event.syncStart) < 15 * 60000)
+                                            i.fas.fa-music.mr-2
+                                        else if ((event.event.duration && event.event.duration > 15 * 60) || (Date.now() - event.event.syncStart) > 15 * 60000)
+                                            i.fas.fa-ticket-alt.mr-2
+                                        else
+                                            i.fas.fa-certificate.mr-2
+                                        span #{event.event.filename}
+                                    .col-auto.d-flex.align-items-center
+                                        if (event.channelInfo)
+                                            a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
+                                                i.fas.fa-edit
+                                        //a.px-2(onClick=`playItem("${event.event.guid}")`).disabled
+                                            i.fas.fa-play
+                                        a.px-2(onClick=`recordThisGUID("${event.event.guid}")`)
+                                            i.fas.fa-voicemail
+                else
+                    h3 No Results
