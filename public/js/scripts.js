@@ -51,6 +51,27 @@ function openTuner(device, digital) {
     });
     return false;
 }
+function zoneCmd(commandUri) {
+    let options = []
+    if (key.length > 0)
+        options.push(key)
+    $.ajax({
+        async: true,
+        url: `${SEQ_APP_URL}/setOutput/${commandUri}?${options.join('&')}`,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, body) {
+            notifyCenter("success", "Zone Manager", "", response);
+        },
+        error: function (xhr) {
+            notifyCenter("danger", "Zone Manager", "", `Failed to get zone manager`)
+        }
+    });
+    return false;
+}
 function openZones() {
     let options = []
     if (key.length > 0)

@@ -18,43 +18,7 @@ body(style="overflow-x: hidden;")
                     background-image: url("!{baseUrl}/assets/img/seq-bg.jpg");
                 }
             script(src=`${baseUrl}js/seq-pre-scripts.js`)
-        div#appTitleBar
-            i.far.mr-2.fa-satellite
-            span.text-uppercase Devices
-
-        //div#appNavigator
-
-        div#appMenuRow2Grid
-            a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
-                i.fa-light.fa-hashtag.fa-fw
-                | Tune
-            a.user-menu-item(title="Manage Audio Outputs" href='#_' onClick=`openZones();`)
-                i.fa-light.fa-volume-up.fa-fw
-                | Zones
-            a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)
-                i.fa-light.fa-satellite.fa-fw
-                | Devices
-            a.user-menu-item(title="Show Playlist" href=`#${baseUrl}eventList`)
-                i.fa-light.fa-list-music.fa-fw
-                | Playlist
-            a.user-menu-item(title="Show Schedule and Searchs" href=`#${baseUrl}schedule`)
-                i.fa-light.fa-calendar-clock.fa-fw
-                | Schedule
-            a.user-menu-item(title="Show Jobs" href=`#${baseUrl}jobList`)
-                i.fa-light.fa-cog.fa-fw
-                | Jobs
-
-
-        div#appContent
-            div
-                div#deviceStatus.pt-3
-                    .row.p-3
-                        .col-xl-3.col-md-6
-                            script.
-                                //startStatusUpdater();
-                                getTunersStatus();
-                            | Loading Devices...
-
+        div#appStaticPost
             #channelTune.modal.fade(tabindex='-1' role='dialog' aria-labelledby='channelTuneTitle' aria-hidden='true')
                 .modal-dialog.modal-dialog-centered(role='document')
                     .modal-content
@@ -83,15 +47,40 @@ body(style="overflow-x: hidden;")
                         .modal-footer
                             button.btn.btn-success(type='button' onClick="renameFile();") Update
                             button.btn.btn-secondary(type='button' data-dismiss='modal') Close
-
-            .d-flex.justify-content-center.align-items-center.position-fixed.w-100.h-100(aria-live='polite' aria-atomic='true' style='z-index: 10; pointer-events: none; min-height: 200px; top: 0;')
-                // Then put toasts within
-                div#centerNotify.toast(role='alert' aria-live='assertive' aria-atomic='true')
-                    .toast-header.border-0
-                        strong.mr-auto Bootstrap
-                        small NaN
-                        button.ml-2.mb-1.close(type='button' data-dismiss='toast' aria-label='Close')
-                            span(aria-hidden='true') &times;
-                    .toast-body.border-0.bg-dark.text-white
-                        span Hello, world! This is a toast message.
             script(src=`${baseUrl}js/seq-scripts.js`)
+        div#appTitleBar
+            i.far.mr-2.fa-satellite
+            span.text-uppercase Devices
+
+        //div#appNavigator
+
+        div#appMenuRow2Grid
+            a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
+                i.fa-light.fa-hashtag.fa-fw
+                | Tune
+            a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)
+                i.fa-light.fa-satellite.fa-fw
+                | Devices
+            a.user-menu-item(title="Manage Audio Outputs" href='#_' onClick=`openZones();`)
+                i.fa-light.fa-volume-up.fa-fw
+                | Zones
+            a.user-menu-item(title="Show Playlist" href=`#${baseUrl}eventList`)
+                i.fa-light.fa-list-music.fa-fw
+                | Playlist
+            a.user-menu-item(title="Show Schedule and Searchs" href=`#${baseUrl}schedule`)
+                i.fa-light.fa-calendar-clock.fa-fw
+                | Schedule
+            a.user-menu-item(title="Show Jobs" href=`#${baseUrl}jobList`)
+                i.fa-light.fa-cog.fa-fw
+                | Jobs
+
+
+        div#appContent
+            div
+                div#deviceStatus.pt-3
+                    .row.p-3
+                        .col-xl-3.col-md-6
+                            script.
+                                //startStatusUpdater();
+                                getTunersStatus();
+                            | Loading Devices...

@@ -370,7 +370,7 @@ router.get('/setOutput/:action/:zone/:index', simpleAuth, async (req, res) => {
         try {
           console.log(body)
           await getDeviceStatus();
-          resolve(body)
+          resolve(body + ' ')
         } catch (err) {
           resolve(false)
         }
