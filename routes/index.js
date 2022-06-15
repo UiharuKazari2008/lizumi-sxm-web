@@ -151,7 +151,8 @@ router.get(['/', '/devices'], simpleAuth, function(req, res, next) {
   if (req.header("Seq-BaseURL")) {
     res.render('dashboard-seqapp', {
       baseUrl: req.header("Seq-BaseURL"),
-      channels: config.favorite_channels.map(e => channelList.filter(f => f.number === e)[0])
+      channels: config.favorite_channels.map(e => channelList.filter(f => f.number === e)[0]),
+      recording_url: config.recording_url
     })
   } else {
     res.render('dashboard', {})

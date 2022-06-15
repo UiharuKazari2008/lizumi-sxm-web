@@ -92,6 +92,10 @@ body(style="overflow-x: hidden;")
             a.user-menu-item(title="Show Playlist" href=`#${baseUrl}eventList`)
                 i.fa-light.fa-list-music.fa-fw
                 | Playlist
+            if (recording_url)
+                a.user-menu-item(title="Show Recordings" href=`${recording_url}`)
+                    i.fa-light.fa-cassette-tape.fa-fw
+                    | Recordings
             a.user-menu-item(title="Show Schedule and Searchs" href=`#${baseUrl}schedule`)
                 i.fa-light.fa-calendar-clock.fa-fw
                 | Schedule
