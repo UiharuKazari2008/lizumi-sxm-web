@@ -7,7 +7,6 @@ div
                         h3 !{zone.name}
                     div
                         each speaker, si in zone.speakers
-                            - console.log(speaker)
                             .btn-group.btn-group-sm(role='group')
                                 a.btn(type='button' class=`${(speaker.state) ? 'btn-success' : (speaker.state === undefined) ? 'btn-danger disabled' : 'btn-secondary'}` onClick=`sendAPIRequest("output/swap/${zone.name}/${si}"); return false;`) !{speaker.name}
                                 a.btn(type='button' class=`${(speaker.state) ? 'btn-success' : (speaker.state === undefined) ? 'btn-danger disabled' : 'btn-secondary'}` onClick=`sendAPIRequest("output/${(speaker.state) ? 'remove' : 'add'}/${zone.name}/${si}"); return false;`)

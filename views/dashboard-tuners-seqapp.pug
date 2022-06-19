@@ -300,7 +300,6 @@ div
                         .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(job.active) ? 'list-group-item-danger' : (job.qeued) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
                             .row.d-flex.justify-content-between.mb-2.mb-sm-0
                                 .col.d-flex.align-items-center
-                                    - console.log(job.event)
                                     if (job.event && job.event.channelInfo)
                                         .badge.bg-dark
                                             span.text-monospace #{job.event.channel}
