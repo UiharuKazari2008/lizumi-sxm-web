@@ -24,7 +24,6 @@ function getTunersStatus() {
     }
     return false;
 }
-
 function getPlaylist(page, filter) {
     let playlistFilterOptions = []
     const optionType = document.querySelector("#playlistFilterType > label input:checked")
@@ -70,116 +69,22 @@ function getJobs(page) {
     return false;
 }
 
-function setSource(tunerId) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `${SEQ_APP_URL}/setSource/${tunerId}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                setTimeout(getTunersStatus, 1000)
-                //notifyCenter("success", "Player", "", response)
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Source", "", `Failed to change the audio source to "${tunerId}"`)
-            }
-        });
-    }
-    return false;
-}
-
-function deTuneTuner(tunerId) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `${SEQ_APP_URL}/deTuneTuner/${tunerId}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                setTimeout(getTunersStatus, 1000)
-                notifyCenter("success", "Tuner", "", response)
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Tuner", "", `Failed to detune the tuner "${tunerId}"`)
-            }
-        });
-    }
-    return false;
-}
-function recordThisTuner(tunerId) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `${SEQ_APP_URL}/pendRequestTuner/${tunerId}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Record", "", "Event has been scheduled for recording!")
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Record", "", `Failed to schedule event for "${tunerId}"`)
-            }
-        });
-    }
-    return false;
-}
-function recordThisGUID(guid) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `${SEQ_APP_URL}/pendRequestGuid/${guid}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Record", "", "Event has been scheduled for recording!")
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Record", "", `Failed to schedule event\n${guid}`)
-            }
-        });
-    }
-    return false;
-}
-function cancelJob(guid) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `${SEQ_APP_URL}/cancelJob/${guid}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Job Manager", "", response)
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Job Manager", "", `Failed to cancel job\n${guid}`)
-            }
-        });
-    }
-    return false;
-}
-function notifyCenter(type, title, sub, message) {
-    $.toast({
-        type: type,
-        title: title,
-        subtitle: sub,
-        content: message,
-        delay: 5000,
+function sendAPIRequest(commandUri) {
+    $.ajax({
+        async: true,
+        url: `${SEQ_APP_URL}/api/${commandUri}`,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, xhr) {
+            setTimeout(getTunersStatus, 1000)
+            notifyCenter("success", "", "", xhr.responseText);
+        },
+        error: function (xhr, textStatus) {
+            notifyCenter("danger", "", "", xhr.responseText);
+        }
     });
     return false;
 }

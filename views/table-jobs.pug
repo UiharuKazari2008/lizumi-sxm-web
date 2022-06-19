@@ -60,7 +60,7 @@ div
                                 span #{job.time}
                         .col-auto.d-flex.align-items-center
                             if (job.guid)
-                                a.px-2(onClick=`cancelJob("${job.guid}")`)
+                                a.px-2(onClick=`sendAPIRequest("pending/remove?guid=${job.guid}")`)
                                     i.fas.fa-trash-alt
     else
         h3 No Jobs

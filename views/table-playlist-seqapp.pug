@@ -54,7 +54,7 @@ body(style="overflow-x: hidden;")
                                     a.dropdown-item(href='#_' id=`filter-tuner-${tuner.id}` data-typeId=`tuner-${tuner.id}` onClick=`getPlaylist(1, "tuner-${tuner.id}")` class=`${(filter === "tuner-" + tuner.id) ? 'active' : ''}`)
                                         span #{tuner.name}
         div#appContent
-            div
+            div#tableContent
                 if (eventList && eventList.length > 0)
                     each event in eventList
                         .list-group
@@ -100,12 +100,13 @@ body(style="overflow-x: hidden;")
                                             i.fas.fa-certificate.mr-2
                                         span #{event.event.filename}
                                     .col-auto.d-flex.align-items-center
+                                        if (event.isExtractedDigitally && event.channelInfo)
+                                            a.px-2(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
+                                                i.fas.fa-play
+                                        a.px-2(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
+                                            i.fas.fa-voicemail
                                         if (event.channelInfo)
                                             a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
                                                 i.fas.fa-edit
-                                        //a.px-2(onClick=`playItem("${event.event.guid}")`).disabled
-                                            i.fas.fa-play
-                                        a.px-2(onClick=`recordThisGUID("${event.event.guid}")`)
-                                            i.fas.fa-voicemail
                 else
                     h3 No Results

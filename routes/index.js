@@ -9,6 +9,7 @@ let channelList = []
 let tunerList = []
 let eventItems = []
 let jobItems = {}
+let jobItemsParsed = []
 
 let timerDeviceStatus = null;
 async function updateDeviceStatus() {
@@ -99,6 +100,37 @@ async function getDeviceStatus() {
         try {
           //console.log("Updated Jobs")
           jobItems = JSON.parse(body)
+          let parsedGUIDs = []
+          jobItemsParsed = [
+            ...jobItems.activeJob.map(e => {
+              const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
+              parsedGUIDs.push(e.guid)
+              return {
+                ...e,
+                event: (event && event.length > 0) ? event[0] : undefined,
+                status: 2
+              }
+            }),
+            ...jobItems.pendingJobs.filter(e => !e.guid || parsedGUIDs.indexOf(e.guid) === -1).map(e => {
+              const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
+              parsedGUIDs.push(e.guid)
+              return {
+                ...e,
+                event: (event && event.length > 0) ? event[0] : undefined,
+                status: 1
+              }
+            }),
+            ...jobItems.requestedJobs.filter(e => (!e.guid || parsedGUIDs.indexOf(e.guid) === -1) && e.done === false).map(e => {
+              const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
+              parsedGUIDs.push(e.guid)
+              return {
+                ...e,
+                event: (event && event.length > 0) ? event[0] : undefined,
+                status: 0
+              }
+            })
+          ]
+
           resolve([])
         } catch (err) {
           console.error(err)
@@ -180,7 +212,8 @@ router.get('/deviceStatus', simpleAuth, async (req, res) => {
         return [pad(hrs), pad(mins), pad(secs)];
       },
       eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000)),
-      liveList: eventItems.slice(0).filter(e => !e.event.duration)
+      liveList: eventItems.slice(0).filter(e => !e.event.duration),
+      jobList: jobItemsParsed,
     })
   } else {
     res.status(500).send("Backend Failure")
@@ -271,39 +304,11 @@ router.get('/eventList', simpleAuth, async (req, res) => {
 });
 router.get('/jobList', simpleAuth, async (req, res) => {
   if (eventItems.length > 0) {
+    let items = jobItemsParsed.slice(0)
+
     let limit = 45
     let start = 0
     let page = 1
-
-    let parsedGUIDs = []
-    let items = []
-    items.push(...jobItems.activeJob.map(e => {
-      const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
-      parsedGUIDs.push(e.guid)
-      return {
-        ...e,
-        event: (event && event.length > 0) ? event[0] : undefined,
-        status: 2
-      }
-    }))
-    items.push(...jobItems.pendingJobs.filter(e => !e.guid || parsedGUIDs.indexOf(e.guid) === -1).map(e => {
-      const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
-      parsedGUIDs.push(e.guid)
-      return {
-        ...e,
-        event: (event && event.length > 0) ? event[0] : undefined,
-        status: 1
-      }
-    }))
-    items.push(...jobItems.requestedJobs.filter(e => (!e.guid || parsedGUIDs.indexOf(e.guid) === -1) && e.done === false).map(e => {
-      const event = (e.guid) ? eventItems.filter(f => f.event.guid === e.guid) : []
-      parsedGUIDs.push(e.guid)
-      return {
-        ...e,
-        event: (event && event.length > 0) ? event[0] : undefined,
-        status: 0
-      }
-    }))
 
     if (req.query.limit) {
       limit = parseInt(req.query.limit) || 30
@@ -333,185 +338,19 @@ router.get('/jobList', simpleAuth, async (req, res) => {
   }
 });
 
-router.get('/setSource/:tuner', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/source/${req.params.tuner}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          await getDeviceStatus();
-          resolve(body)
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
+router.get('/api/*', simpleAuth, async (req, res) => {
+  request.get({
+    url: `http://${(config.backend) ? config.backend : 'localhost:9080'}${req.originalUrl.substring(4)}`,
+    timeout: 30000
+  }, async function (err, resReq, body) {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Backend API Failure")
+    } else {
+      console.log(body)
+      res.status(resReq.statusCode).send(body)
+    }
   })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/setOutput/:action/:zone/:index', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/output/${req.params.action}/${req.params.zone}/${req.params.index}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          await getDeviceStatus();
-          resolve(body + ' ')
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/tuneChannel/:channel', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/tune/${req.params.channel}?${(req.query.tuner) ? 'tuner=' + req.query.tuner : ''}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          resolve(body)
-          await getDeviceStatus();
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response !== false) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/deTuneTuner/:tuner', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/detune/${req.params.tuner}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          await getDeviceStatus();
-          resolve(body)
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/pendRequestTuner/:tuner', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?tuner=${req.params.tuner}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          resolve(body)
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/pendRequestGuid/:guid', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/add?guid=${req.params.guid}`,
-      timeout: 60000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          console.log(body)
-          resolve(body)
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
-});
-router.get('/cancelJob/:guid', simpleAuth, async (req, res) => {
-  const response = await new Promise((resolve) => {
-    request.get({
-      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/pending/remove?guid=${req.params.guid}`,
-      timeout: 30000
-    }, async function (err, resReq, body) {
-      if (err) {
-        console.error(err);
-        resolve(false)
-      } else {
-        try {
-          await getDeviceStatus();
-          console.log(body)
-          resolve(body)
-        } catch (err) {
-          resolve(false)
-        }
-      }
-    })
-  })
-  if (response) {
-    res.status(200).send(response)
-  } else {
-    res.status(500).send("Backend Failure")
-  }
 });
 router.get('/updateFileName', simpleAuth, async (req, res) => {
   if (req.query.ch && req.query.ch.length > 0 &&

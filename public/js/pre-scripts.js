@@ -1,17 +1,25 @@
 const searchParams = new URLSearchParams(document.location.search);
-const key = (searchParams.get('key')) ? 'key=' + searchParams.get('key') : ''
+const key = (typeof SEQ_APP_URL !== 'undefined') ? false : (searchParams.has('key')) ? searchParams.get('key') : false
+let refreshTimer = null;
+let notifyCenter
 
 function startStatusUpdater() {
-    getTunersStatus();
-    setInterval(getTunersStatus, 10000);
+    clearInterval(refreshTimer);
+    refreshTimer = setInterval(getTunersStatus, 15000);
     return false;
 }
 
 function getTunersStatus() {
     if (document.getElementById("deviceStatus")) {
+        let _url = new URL(`${document.location.origin}/deviceStatus`);
+        if (typeof SEQ_APP_URL !== 'undefined')
+            _url.pathname = SEQ_APP_URL + _url.pathname;
+        if (key)
+            _url.searchParams.set('key', key);
+
         $.ajax({
             async: true,
-            url: `/deviceStatus?${key}`,
+            url: _url.href,
             type: "GET",
             data: '',
             processData: false,
@@ -20,67 +28,80 @@ function getTunersStatus() {
             success: function (response, textStatus, xhr) {
                 $("#deviceStatus").html($(response).children());
             },
-            error: function (xhr) {
-                //$("#deviceStatus").html(`<h3>Failed to get status</h3>`);
-            }
+            error: function (xhr) {}
         });
+    } else {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
     }
     return false;
 }
-
 function getPlaylist(page, filter) {
-    $("#tableContent").removeClass("d-none");
-    $("#tabPlaylist").addClass("active");
-    $("#tableJobs").addClass("d-none");
-    $("#tabJobs").removeClass("active");
     let playlistFilterOptions = []
     if (document.getElementById("tableContent")) {
-        if (key.length > 0)
-            playlistFilterOptions.push(key)
+        $("#tableContent").removeClass("d-none");
+        $("#tabPlaylist").addClass("active");
+        $("#tableJobs").addClass("d-none");
+        $("#tabJobs").removeClass("active");
         const optionType = document.querySelector("#playlistFilterType > label input:checked")
         const optionFilter = document.querySelector("#setPlaylistFilterChannel > .active")
+
+        let _url = new URL(`${document.location.origin}/eventList`);
+        if (typeof SEQ_APP_URL !== 'undefined')
+            _url.pathname = SEQ_APP_URL + _url.pathname;
+        if (key)
+            _url.searchParams.set('key', key);
+        if (page)
+            _url.searchParams.set('page', page);
         if (optionType)
-            playlistFilterOptions.push(`type=${optionType.getAttribute('data-typeId')}`)
+            _url.searchParams.set('type', optionType.getAttribute('data-typeId'))
         if (filter) {
-            playlistFilterOptions.push(`filter=${filter}`)
+            _url.searchParams.set('filter', filter)
         } else if (optionFilter) {
-            playlistFilterOptions.push(`filter=${optionFilter.getAttribute('data-typeId')}`)
+            _url.searchParams.set('filter', optionFilter.getAttribute('data-typeId'))
         }
         if (page)
-            playlistFilterOptions.push(`page=${page}`)
-        $.ajax({
-            async: true,
-            url: `/eventList?${playlistFilterOptions.join('&')}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                $("#tableContent").html($(response).children());
-            },
-            error: function (xhr) {
-                //$("#tableContent").html(`<h3>Failed to get playlist</h3>`);
-            }
-        });
+            _url.searchParams.set('page', page)
+
+        if (typeof SEQ_APP_URL !== 'undefined') {
+            getNewContent([],[],`${_url.pathname}?${_url.search}`);
+        } else {
+            $.ajax({
+                async: true,
+                url: _url.href,
+                type: "GET",
+                data: '',
+                processData: false,
+                contentType: false,
+                headers: {},
+                success: function (response, textStatus, xhr) {
+                    $("#tableContent").html($(response).children());
+                },
+                error: function (xhr) {
+                }
+            });
+        }
     }
     return false;
 }
 function getJobs(page) {
-    $("#tableContent").addClass("d-none");
-    $("#tabPlaylist").removeClass("active");
-    $("#tableJobs").removeClass("d-none");
-    $("#tabJobs").addClass("active");
-
     if (document.getElementById("tableJobs")) {
-        let playlistFilterOptions = []
-        if (key.length > 0)
-            playlistFilterOptions.push(key)
+        $("#tableContent").addClass("d-none");
+        $("#tabPlaylist").removeClass("active");
+        $("#tableJobs").removeClass("d-none");
+        $("#tabJobs").addClass("active");
+
+        let _url = new URL(`${document.location.origin}/jobList`);
+        if (typeof SEQ_APP_URL !== 'undefined')
+            _url.pathname = SEQ_APP_URL + _url.pathname;
+        if (key)
+            _url.searchParams.set('key', key);
         if (page)
-            playlistFilterOptions.push(`page=${page}`)
+            _url.searchParams.set('page', page);
+
         $.ajax({
             async: true,
-            url: `/jobList?${playlistFilterOptions.join('&')}`,
+            url: _url.href,
             type: "GET",
             data: '',
             processData: false,
@@ -89,114 +110,167 @@ function getJobs(page) {
             success: function (response, textStatus, xhr) {
                 $("#tableJobs").html($(response).children());
             },
-            error: function (xhr) {
-                //$("#tableJobs").html(`<h3>Failed to get jobs</h3>`);
-            }
+            error: function (xhr) {}
         });
     }
     return false;
 }
 
-function setSource(tunerId) {
-    if (document.getElementById("deviceStatus")) {
+function sendAPIRequest(commandUri) {
+    let _url = new URL(`${document.location.origin}/api/${commandUri}`);
+    if (typeof SEQ_APP_URL !== 'undefined')
+        _url.pathname = SEQ_APP_URL + _url.pathname;
+    if (key)
+        _url.searchParams.set('key', key);
+
+    $.ajax({
+        async: true,
+        url: _url.href,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, xhr) {
+            setTimeout(getTunersStatus, 1000)
+            notifyCenter("success", "", "", response);
+        },
+        error: function (xhr, textStatus) {
+            notifyCenter("danger", "", "", xhr.responseText);
+        }
+    });
+    return false;
+}
+
+function openTuner(device, digital) {
+    let _url = new URL(`${document.location.origin}/channelsList`);
+    if (typeof SEQ_APP_URL !== 'undefined')
+        _url.pathname = SEQ_APP_URL + _url.pathname;
+    if (key)
+        _url.searchParams.set('key', key);
+    if (device)
+        _url.searchParams.set('tuner', device);
+    if (digital)
+        _url.searchParams.set('digital', digital);
+
+    $.ajax({
+        async: true,
+        url: _url.href,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, xhr) {
+            channelsBody.html($(response).children());
+            channelsModel.modal('show');
+        },
+        error: function (xhr) {
+            notifyCenter("danger", "Tune", "", `Failed to get channel list`)
+        }
+    });
+    return false;
+}
+function openZones() {
+    let _url = new URL(`${document.location.origin}/zoneList`);
+    if (typeof SEQ_APP_URL !== 'undefined')
+        _url.pathname = SEQ_APP_URL + _url.pathname;
+    if (key)
+        _url.searchParams.set('key', key);
+
+    $.ajax({
+        async: true,
+        url: _url.href,
+        type: "GET",
+        data: '',
+        processData: false,
+        contentType: false,
+        headers: {},
+        success: function (response, textStatus, xhr) {
+            zonesBody.html($(response).children());
+            zonesModel.modal('show');
+        },
+        error: function (xhr) {
+            notifyCenter("danger", "Tune", "", `Failed to get zone manager`)
+        }
+    });
+    return false;
+}
+
+function openRename(filename, ch, guid) {
+    if (filename && guid && ch) {
+        renameGuid[0].value = guid;
+        renameChannel[0].value = ch;
+        renameInput[0].value = filename;
+        renameModel.modal('show');
+    }
+    return false;
+}
+function renameFile() {
+    if (renameInput && renameInput[0].value && renameInput[0].value.trim().length > 0) {
+        renameModel.modal('hide');
+        let _url = new URL(`${document.location.origin}/updateFileName`);
+        if (typeof SEQ_APP_URL !== 'undefined')
+            _url.pathname = SEQ_APP_URL + _url.pathname;
+        if (key)
+            _url.searchParams.set('key', key);
+        _url.searchParams.set('ch', renameChannel[0].value);
+        _url.searchParams.set('guid', renameGuid[0].value);
+        _url.searchParams.set('filename', encodeURIComponent(renameInput[0].value.trim()));
+
         $.ajax({
             async: true,
-            url: `/setSource/${tunerId}?${key}`,
+            url: _url.href,
             type: "GET",
             data: '',
             processData: false,
             contentType: false,
             headers: {},
             success: function (response, textStatus, xhr) {
-                setTimeout(getTunersStatus, 1000)
-                //notifyCenter("success", "Player", "", response)
+                notifyCenter("success", "Rename", "", `Updated filename to\n"${renameInput[0].value.trim()}"`)
             },
             error: function (xhr) {
-                notifyCenter("danger", "Source", "", `Failed to change the audio source to "${tunerId}"`)
+                notifyCenter("danger", "Rename", "", `Failed to update filename`)
             }
         });
+    } else {
+        notifyCenter("danger", "Rename", "", `Invalid Filename`)
     }
     return false;
 }
 
-function deTuneTuner(tunerId) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `/deTuneTuner/${tunerId}?${key}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                setTimeout(getTunersStatus, 1000)
-                notifyCenter("success", "Tuner", "", response)
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Tuner", "", `Failed to detune the tuner "${tunerId}"`)
-            }
+if (typeof SEQ_APP_URL !== 'undefined') {
+    notifyCenter = function (type, title, sub, message) {
+        $.toast({
+            type: type,
+            title: title,
+            subtitle: sub,
+            content: message,
+            delay: 5000,
         });
+        return false;
     }
-    return false;
-}
-function recordThisTuner(tunerId) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `/pendRequestTuner/${tunerId}?${key}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Record", "", "Event has been scheduled for recording!")
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Record", "", `Failed to schedule event for "${tunerId}"`)
-            }
-        });
+} else {
+    notifyCenter = function (type, title, sub, message) {
+        const header = $("#centerNotify > .toast-header")
+        switch (type) {
+            case 'success':
+                header.attr("class", "toast-header border-0 bg-success text-white");
+                break;
+            case 'warning':
+                header.attr("class", "toast-header border-0 bg-warning text-white");
+                break;
+            case 'danger':
+                header.attr("class", "toast-header border-0 bg-danger text-white");
+                break;
+            default:
+                header.attr("class", "toast-header border-0 bg-black text-white");
+                break;
+        }
+        $("#centerNotify > .toast-header > strong.mr-auto").text(title);
+        $("#centerNotify > .toast-header > small").text(sub);
+        $("#centerNotify > .toast-body > span").text(message);
+        $("#centerNotify").toast('show');
+        return false;
     }
-    return false;
-}
-function recordThisGUID(guid) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `/pendRequestGuid/${guid}?${key}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Record", "", "Event has been scheduled for recording!")
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Record", "", `Failed to schedule event\n${guid}`)
-            }
-        });
-    }
-    return false;
-}
-function cancelJob(guid) {
-    if (document.getElementById("deviceStatus")) {
-        $.ajax({
-            async: true,
-            url: `/cancelJob/${guid}?${key}`,
-            type: "GET",
-            data: '',
-            processData: false,
-            contentType: false,
-            headers: {},
-            success: function (response, textStatus, xhr) {
-                notifyCenter("success", "Job Manager", "", response)
-            },
-            error: function (xhr) {
-                notifyCenter("danger", "Job Manager", "", `Failed to cancel job\n${guid}`)
-            }
-        });
-    }
-    return false;
 }

@@ -1,21 +1,3 @@
-/*window.addEventListener('DOMContentLoaded', event => {
-
-    // Toggle the side navigation
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
-        sidebarToggle.addEventListener('click', event => {
-            event.preventDefault();
-            document.body.classList.toggle('sb-sidenav-toggled');
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-        });
-    }
-
-});*/
-
 const channelsModel = $("#channelTune");
 const channelsBody = $("#channelList");
 const zonesModel = $("#zoneManager");
@@ -65,49 +47,6 @@ function openZones() {
         },
         error: function (xhr) {
             notifyCenter("danger", "Tune", "", `Failed to get zone manager`)
-        }
-    });
-    return false;
-}
-function zoneCmd(commandUri) {
-    let options = []
-    $.ajax({
-        async: true,
-        url: `${SEQ_APP_URL}/setOutput/${commandUri}?${options.join('&')}`,
-        type: "GET",
-        data: '',
-        processData: false,
-        contentType: false,
-        headers: {},
-        success: function (response, textStatus, body) {
-            notifyCenter("success", "Zone Manager", "", response);
-        },
-        error: function (xhr) {
-            notifyCenter("danger", "Zone Manager", "", `Failed to get zone manager`)
-        }
-    });
-    return false;
-}
-function tuneChannel(channel, device, warning) {
-    channelsModel.modal('hide');
-    let options = []
-    if (device)
-        options.push(`tuner=${device}`)
-    $.ajax({
-        async: true,
-        url: `${SEQ_APP_URL}/tuneChannel/${channel}?${options.join('&')}`,
-        type: "GET",
-        data: '',
-        processData: false,
-        contentType: false,
-        headers: {},
-        success: function (response, textStatus, xhr) {
-            //console.log('Channel changed')
-            if (warning)
-                notifyCenter("warning", "Tune", "", `This device does not support automated tuning for ${channel}, please manually tune this tuner now`)
-        },
-        error: function (xhr) {
-            notifyCenter("danger", "Tune", "", `Failed to tune to ${channel}`)
         }
     });
     return false;

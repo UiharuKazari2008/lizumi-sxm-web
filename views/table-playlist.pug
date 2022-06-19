@@ -89,12 +89,13 @@ div
                                 i.fas.fa-certificate.me-2
                             span #{event.event.filename}
                         .col-auto.d-flex.align-items-center
+                            if (event.isExtractedDigitally && event.channelInfo)
+                                a.px-2(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
+                                    i.fas.fa-play
+                            a.px-2(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
+                                i.fas.fa-voicemail
                             if (event.channelInfo)
                                 a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
                                     i.fas.fa-edit
-                            //a.px-2(onClick=`playItem("${event.event.guid}")`).disabled
-                                i.fas.fa-play
-                            a.px-2(onClick=`recordThisGUID("${event.event.guid}")`)
-                                i.fas.fa-voicemail
     else
         h3 No Results

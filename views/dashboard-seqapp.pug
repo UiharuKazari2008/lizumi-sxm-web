@@ -17,7 +17,7 @@ body(style="overflow-x: hidden;")
                 .background-image:not(.overlay) {
                     background-image: url("!{baseUrl}/assets/img/seq-bg.jpg");
                 }
-            script(src=`${baseUrl}js/seq-pre-scripts.js`)
+            script(src=`${baseUrl}js/pre-scripts.js`)
         div#appPanels
             div#radioManagerChannels(class="collapse" data-parent="#menuAccordion")
                 div.position-relative.pt-3.pr-3.pl-3.user-menu-height(style="width: 100%;")
@@ -34,7 +34,7 @@ body(style="overflow-x: hidden;")
                         if (channels && channels.length > 0)
                             .menu-grid(style='overflow-x: scroll; overflow-y:hidden; white-space: nowrap;')
                                 each channel in channels
-                                    a.user-menu-item.user-menu-small(title=`Tune to ${channel.number}` href='#_' onClick=`tuneChannel("${channel.number}");`)
+                                    a.user-menu-item.user-menu-small(title=`Tune to ${channel.number}` href='#_' onClick=`sendAPIRequest("tune/${channel.number}");`)
                                         img(src=`data:image/png;base64,${channel.image}` style='height: 3em;')
                         else
                             h2 No Channels Available!
@@ -67,10 +67,10 @@ body(style="overflow-x: hidden;")
                         .modal-footer
                             button.btn.btn-success(type='button' onClick="renameFile();") Update
                             button.btn.btn-secondary(type='button' data-dismiss='modal') Close
-            script(src=`${baseUrl}js/seq-scripts.js`)
+            script(src=`${baseUrl}js/scripts.js`)
         div#appTitleBar
             i.far.mr-2.fa-satellite
-            span.text-uppercase Devices
+            span.text-uppercase Dashboard
 
         div#appNavigation
             a#refreshPage.bottomBtn.btn.btn-lg.btn-circle.red(title="Refresh Page" href='#_' onClick="getTunersStatus(); return false;")
@@ -80,12 +80,12 @@ body(style="overflow-x: hidden;")
             //a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
                 i.fa-light.fa-hashtag.fa-fw
                 | Tune
+            a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)
+                i.fa-light.fa-satellite.fa-fw
+                | Dashboard
             a.user-menu-item(title="Open Tuner Menu" href='#_' class="collapsed" data-toggle="collapse" data-target="#radioManagerChannels")
                 i.fa-light.fa-hashtag.fa-fw
                 | Tune
-            a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)
-                i.fa-light.fa-satellite.fa-fw
-                | Devices
             a.user-menu-item(title="Manage Audio Outputs" href='#_' onClick=`openZones();`)
                 i.fa-light.fa-volume-up.fa-fw
                 | Zones
@@ -99,10 +99,6 @@ body(style="overflow-x: hidden;")
             a.user-menu-item(title="Show Schedule and Searchs" href=`#${baseUrl}schedule`)
                 i.fa-light.fa-calendar-clock.fa-fw
                 | Schedule
-            a.user-menu-item(title="Show Jobs" href=`#${baseUrl}jobList`)
-                i.fa-light.fa-cog.fa-fw
-                | Jobs
-
 
         div#appContent
             div
@@ -110,6 +106,6 @@ body(style="overflow-x: hidden;")
                     .row.p-3
                         .col-xl-3.col-md-6
                             script.
-                                //startStatusUpdater();
+                                startStatusUpdater();
                                 getTunersStatus();
-                            | Loading Devices...
+                            | Loading Dashboard ...
