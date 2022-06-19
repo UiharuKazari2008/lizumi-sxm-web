@@ -58,13 +58,13 @@ body(style="overflow-x: hidden;")
                 if (eventList && eventList.length > 0)
                     each event in eventList
                         .list-group
-                            .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.queued) ? 'list-group-item-danger' : (event.exists) ? 'list-group-item-success'  : (event.event.isEpisode) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
+                            .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.queued) ? 'list-group-item-danger' : (event.exists) ? 'list-group-item-success' : (event.event.isEpisode) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
                                 .row.d-flex.justify-content-between.mb-2.mb-sm-0
-                                    .col.d-flex.align-items-center
+                                    .col.align-items-center.d-inline-flex
                                         if (event.channelInfo)
                                             .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
-                                                span.text-monospace #{event.channel}
-                                                span.small.pl-1 #{event.channelInfo.name}
+                                                //span.text-monospace #{event.channel}
+                                                span.small #{event.channelInfo.name}
                                         else if (event.channel)
                                             span.badge.bg-success #{event.channel}
                                         if (!event.event.noTuner && event.tuner)
@@ -74,11 +74,11 @@ body(style="overflow-x: hidden;")
                                         if (event.event.isEpisode)
                                             i.fas.fa-exclamation-triangle.ml-2(tooltip="Episode: Inaccurate and not guaranteed it occurred\nSometimes the actual event metadata was never pushed, so this is more of a backup and is the very top text that is displayed on 360L radios")
                                         if (event.exists)
-                                            i.fas.fa-save.ml-2(tooltip="On Disk: Has already been extracted or recorded")
+                                            i.fas.fa-voicemail.ml-2(tooltip="On Disk: Has already been extracted or recorded")
                                         if (event.queued)
                                             i.fas.fa-spinner.ml-2(tooltip="Enqueued: This event is attached to a job or is actively being recorded")
 
-                                    .col-auto.d-flex.align-items-center
+                                    .col-auto.align-items-center.d-inline-flex
                                         //i.fas.fa-certificate.mr-2
                                         if (event.isExtractedDigitally)
                                             i.fas.fa-wifi.mr-2(tooltip="Recordable: This can be digitally recorded, so act now!")
@@ -86,9 +86,8 @@ body(style="overflow-x: hidden;")
                                             span.badge.bg-danger.mr-2(tooltip="Live: This event has no duration at this time but can be recorded") LIVE
                                         else if (event.time)
                                             span.badge.bg-dark.mr-2 #{event.time}
-                                        span.small.mr-1.d-none.d-md-inline #{event.date}
                                         span.small #{event.niceDate}
-                                .row.d-flex.justify-content-between
+                                .row.d-flex.justify-content-between.flex-sm-row.flex-column
                                     .col
                                         if ((event.event.duration && event.event.duration < 60) || (Date.now() - event.event.syncStart) < 60000)
                                             i.fas.fa-certificate.mr-2
@@ -98,11 +97,13 @@ body(style="overflow-x: hidden;")
                                             i.fas.fa-ticket-alt.mr-2
                                         else
                                             i.fas.fa-certificate.mr-2
-                                        span #{event.event.filename}
-                                    .col-auto.d-flex.align-items-center
+                                        span.overflow-hidden #{event.event.filename}
+                                    .col-auto.d-inline-flex.align-items-center
                                         if (event.isExtractedDigitally && event.channelInfo)
                                             a.px-2(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
                                                 i.fas.fa-play
+                                        a.px-2(onClick=`sendAPIRequest("tune/${event.channelInfo.number}")`)
+                                            i.fas.fa-hashtag
                                         a.px-2(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
                                             i.fas.fa-voicemail
                                         if (event.channelInfo)

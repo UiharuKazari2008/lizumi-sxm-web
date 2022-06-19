@@ -37,9 +37,16 @@
     opacity: 0.75
 }
 
+.show-small {
+    display: none;
+}
+
 @media (max-width: 430px) {
-    .channel-icon {
+    .show-small, .channel-icon {
         display: initial;
+    }
+    .hide-small {
+        display: none;
     }
 }
 
