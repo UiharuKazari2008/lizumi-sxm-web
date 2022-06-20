@@ -10,6 +10,7 @@ let tunerList = []
 let eventItems = []
 let jobItems = {}
 let jobItemsParsed = []
+let jobCompleted = []
 
 let timerDeviceStatus = null;
 async function updateDeviceStatus() {
@@ -131,6 +132,10 @@ async function getDeviceStatus() {
             })
           ]
 
+          jobCompleted = [
+            ...jobItems.completed,
+            ...jobItems.tunedEvents.filter(e => jobItems.completed.indexOf(e) === -1)
+          ];
           resolve([])
         } catch (err) {
           console.error(err)
@@ -211,7 +216,7 @@ router.get('/deviceStatus', simpleAuth, async (req, res) => {
 
         return [pad(hrs), pad(mins), pad(secs)];
       },
-      eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000)),
+      eventList: eventItems.slice(0).filter(e => !e.event.isEpisode && !e.event.exists && jobCompleted.indexOf(e.event.guid) === -1 && !e.event.queued && (e.event.syncStart >= (Date.now() - 14400000)) && ((e.event.duration && e.event.duration > 15 * 60) || (!e.event.duration && (Date.now() - e.event.syncStart)) > 15 * 60000)),
       liveList: eventItems.slice(0).filter(e => !e.event.duration),
       jobList: jobItemsParsed,
     })

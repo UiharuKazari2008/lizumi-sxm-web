@@ -233,20 +233,21 @@ div
             div.w-100
                 each event in eventList
                     .list-group
-                        .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.event.duration === 0) ? 'list-group-item-danger' : 'list-group-item-success'}`)
+                        .list-group-item.list-group-item-action.flex-column.align-items-start.text-white.py-2.bg-light(style=`${(event.event.duration === 0) ? 'background: darkred !important;' : ''}`)
                             .row.d-flex.justify-content-between.mb-2.mb-sm-0
                                 .col.align-items-center.d-inline-flex
+                                    img.pr-2(src=`data:image/png;base64,${event.channelInfo.image}` height="24px")
                                     span #{event.event.filename}
-                                .col-auto.p-0
+                                .col-auto.p-0.d-none.d-sm-block
                                     span #{event.niceDate}
                                 .col-auto.p-0.mr-1
                                     if (event.isExtractedDigitally && event.channelInfo && ((Date.now() - event.event.syncStart) / 1000) > event.event.delay)
-                                        a.px-2(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
+                                        a.px-2.text-white(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
                                             i.fas.fa-play
-                                    a.px-2(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
+                                    a.px-2.text-white(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
                                         i.fas.fa-voicemail
                                     if (event.channelInfo)
-                                        a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
+                                        a.px-2.text-white(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
                                             i.fas.fa-edit
     if (liveList && liveList.length > 0)
         .row.px-3.pl-1
@@ -255,52 +256,19 @@ div
             div.w-100
                 each event in liveList
                     .list-group
-                        .list-group-item.list-group-item-action.flex-column.align-items-start(class=`${(event.queued) ? 'list-group-item-danger' : (event.exists) ? 'list-group-item-success' : (event.event.isEpisode) ? 'list-group-item-warning' : 'list-group-item-dark'}`)
+                        .list-group-item.list-group-item-action.flex-column.align-items-start.text-white.py-2(class=`${(event.event.duration === 0) ? 'bg-danger' : 'bg-success'}` style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
                             .row.d-flex.justify-content-between.mb-2.mb-sm-0
                                 .col.align-items-center.d-inline-flex
-                                    if (event.channelInfo)
-                                        .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
-                                            //span.text-monospace #{event.channel}
-                                            span.small #{event.channelInfo.name}
-                                    else if (event.channel)
-                                        span.badge.bg-success #{event.channel}
-                                    if (!event.event.noTuner && event.tuner)
-                                        span.badge.bg-primary.ml-1 #{event.tuner.name}
-                                    if (event.duplicate)
-                                        i.fas.fa-clone.ml-2(tooltip="Duplicate: has been played before")
-                                    if (event.event.isEpisode)
-                                        i.fas.fa-exclamation-triangle.ml-2(tooltip="Episode: Inaccurate and not guaranteed it occurred\nSometimes the actual event metadata was never pushed, so this is more of a backup and is the very top text that is displayed on 360L radios")
-                                    if (event.exists)
-                                        i.fas.fa-voicemail.ml-2(tooltip="On Disk: Has already been extracted or recorded")
-                                    if (event.queued)
-                                        i.fas.fa-spinner.ml-2(tooltip="Enqueued: This event is attached to a job or is actively being recorded")
-
-                                .col-auto.align-items-center.d-inline-flex
-                                    //i.fas.fa-certificate.mr-2
-                                    if (event.isExtractedDigitally)
-                                        i.fas.fa-wifi.mr-2(tooltip="Recordable: This can be digitally recorded, so act now!")
-                                    span.small #{event.niceDate}
-                            .row.d-flex.justify-content-between.flex-sm-row.flex-column
-                                .col
-                                    if ((event.event.duration && event.event.duration < 60) || (Date.now() - event.event.syncStart) < 60000)
-                                        i.fas.fa-certificate.mr-2
-                                    else if ((event.event.duration && event.event.duration < 15 * 60) || (Date.now() - event.event.syncStart) < 15 * 60000)
-                                        i.fas.fa-music.mr-2
-                                    else if ((event.event.duration && event.event.duration > 15 * 60) || (Date.now() - event.event.syncStart) > 15 * 60000)
-                                        i.fas.fa-ticket-alt.mr-2
-                                    else
-                                        i.fas.fa-certificate.mr-2
-                                    span.overflow-hidden #{event.event.filename}
-                                .col-auto.d-inline-flex.align-items-center
+                                    img.pr-2(src=`data:image/png;base64,${event.channelInfo.image}` height="24px")
+                                    span #{event.event.filename}
+                                .col-auto.p-0.mr-1
                                     if (event.isExtractedDigitally && event.channelInfo && ((Date.now() - event.event.syncStart) / 1000) > event.event.delay)
-                                        a.px-2(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
+                                        a.px-2.text-white(onClick=`sendAPIRequest("play/${event.channelInfo.id}/${event.event.guid}")`)
                                             i.fas.fa-play
-                                    a.px-2(onClick=`sendAPIRequest("tune/${event.channelInfo.number}")`)
-                                        i.fas.fa-hashtag
-                                    a.px-2(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
+                                    a.px-2.text-white(onClick=`sendAPIRequest("pending/add?guid=${event.event.guid}")`)
                                         i.fas.fa-voicemail
                                     if (event.channelInfo)
-                                        a.px-2(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
+                                        a.px-2.text-white(onClick=`openRename('${event.event.filename}', '${event.channelInfo.id}', '${event.event.guid}')`)
                                             i.fas.fa-edit
     if (jobList && jobList.length > 0)
         .row.px-3.pl-1
