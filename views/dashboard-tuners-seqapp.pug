@@ -207,13 +207,14 @@ div
                                                 | STANDBY
                     .card-footer.p-2.bg-black.border-0
                         .align-items-center.justify-content-between.d-flex
-                            .btn-group
-                                a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Listen to this device" onClick=`sendAPIRequest("source/${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' :'disabled' : ''}` )
-                                    i.fas.fa-headphones
-                                a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
-                                    i.fas.fa-hashtag
-                                a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Deactivate this tuner (Detune)" class=`${(!tuner.channel || tuner.working || tuner.locked) ? 'disabled' : ''}` onClick=`sendAPIRequest("detune/${tuner.id}")`)
-                                    i.fas.fa-eject
+                            if (!tuner.record_only)
+                                .btn-group
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Listen to this device" onClick=`sendAPIRequest("source/${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' :'disabled' : ''}` )
+                                        i.fas.fa-headphones
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
+                                        i.fas.fa-hashtag
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Deactivate this tuner (Detune)" class=`${(!tuner.channel || tuner.working || tuner.locked) ? 'disabled' : ''}` onClick=`sendAPIRequest("detune/${tuner.id}")`)
+                                        i.fas.fa-eject
 
                             .btn-group(style="margin-left: auto")
                                 if (tuner.working)
