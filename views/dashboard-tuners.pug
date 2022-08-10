@@ -156,6 +156,10 @@ div
                                 if (tuner.working)
                                     a.btn.btn-danger(href='#_' tooltip="Select an event of song to record" onClick=`sendAPIRequest("pending/remove?guid=${tuner.working.guid}")`)
                                         i.fas.fa-trash-alt
+                                else if (tuner.record_only)
+                                    a.btn.btn-danger.disabled(href='#_')
+                                        i.fas.fa-trash-alt
+
                                 if (tuner.history)
                                     a.btn.btn-dark(href='#_' tooltip="Select an event of song to record" onClick=`getPlaylist(1, "tuner-${tuner.id}")`)
                                         i.fas.fa-th-list
@@ -175,6 +179,10 @@ div
                                 if (tuner.working)
                                     a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Select an event of song to record" onClick=`sendAPIRequest("pending/remove?guid=${tuner.working.guid}")`)
                                         i.fas.fa-trash-alt
+                                else if (tuner.record_only)
+                                    a.btn.btn-danger.btn-sm.px-2.disabled(href='#_')
+                                        i.fas.fa-trash-alt
+
                                 if (tuner.history)
                                     a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select an event of song to record" onClick=`getPlaylist(1, "tuner-${tuner.id}")`)
                                         i.fas.fa-th-list
