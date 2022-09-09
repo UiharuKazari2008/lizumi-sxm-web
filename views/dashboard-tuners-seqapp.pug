@@ -106,22 +106,6 @@ div
                                                         span.font-digital.p-0 --
                                                         span(style="color: #24ff73!important; vertical-align: text-top;") :
                                                         span.font-digital.p-0 --
-                                                script.
-                                                    var t_#{tuner.id.replace('-', '_')} = #{tuner.player.elapsedTime}
-                                                    var f_#{tuner.id.replace('-', '_')} = document.getElementById(`tuner-#{tuner.id}`).querySelector('.playback_time');
-                                                    timer_#{tuner.id.replace('-', '_')} = setInterval(function () {
-                                                        t_#{tuner.id.replace('-', '_')} = t_#{tuner.id.replace('-', '_')} + 1000
-                                                        const nt = msToTime(t_#{tuner.id.replace('-', '_')})
-                                                        const sp = f_#{tuner.id.replace('-', '_')}.querySelectorAll('span')
-                                                        sp[0].textContent = nt[0]
-                                                        sp[2].textContent = nt[1]
-                                                        sp[4].textContent = nt[2]
-                                                    }, 1000);
-
-                                                    var blink_#{tuner.id.replace('-', '_')} = document.getElementById(`tuner-#{tuner.id}`).querySelector('.blink');
-                                                    blink_timer_#{tuner.id.replace('-', '_')} = setInterval(function () {
-                                                        blink_#{tuner.id.replace('-', '_')}.style.visibility = (blink_#{tuner.id.replace('-', '_')}.style.visibility == 'hidden' ? '' : 'hidden');
-                                                    }, 1000);
                                 else if (tuner.player)
                                     if (tuner.player.timeLeft)
                                         .m-0.text-overflow.align-items-center.d-flex
@@ -145,17 +129,6 @@ div
                                                         span.font-digital.p-0 #{digit}
                                                         if (index !== 2)
                                                             span(style="color: #24ff73!important; vertical-align: text-top;") :
-                                                script.
-                                                    var t_#{tuner.id.replace('-','_')} = #{tuner.player.elapsedTime}
-                                                    var f_#{tuner.id.replace('-','_')} = document.getElementById(`tuner-#{tuner.id}`).querySelector('.playback_time');
-                                                    timer_#{tuner.id.replace('-','_')} = setInterval(function () {
-                                                        t_#{tuner.id.replace('-','_')} = t_#{tuner.id.replace('-','_')} + 1000
-                                                        const nt = msToTime(t_#{tuner.id.replace('-','_')})
-                                                        const sp = f_#{tuner.id.replace('-','_')}.querySelectorAll('span')
-                                                        sp[0].textContent = nt[0]
-                                                        sp[2].textContent = nt[1]
-                                                        sp[4].textContent = nt[2]
-                                                    }, 1000);
 
                                     else
                                         .m-0.text-overflow.align-items-center.d-flex
@@ -177,22 +150,6 @@ div
                                                         span.font-digital.p-0 --
                                                         span(style="color: #24ff73!important; vertical-align: text-top;") :
                                                         span.font-digital.p-0 --
-                                                script.
-                                                    var t_#{tuner.id.replace('-', '_')} = #{tuner.player.elapsedTime}
-                                                    var f_#{tuner.id.replace('-', '_')} = document.getElementById(`tuner-#{tuner.id}`).querySelector('.playback_time');
-                                                    timer_#{tuner.id.replace('-', '_')} = setInterval(function () {
-                                                        t_#{tuner.id.replace('-', '_')} = t_#{tuner.id.replace('-', '_')} + 1000
-                                                        const nt = msToTime(t_#{tuner.id.replace('-', '_')})
-                                                        const sp = f_#{tuner.id.replace('-', '_')}.querySelectorAll('span')
-                                                        sp[0].textContent = nt[0]
-                                                        sp[2].textContent = nt[1]
-                                                        sp[4].textContent = nt[2]
-                                                    }, 1000);
-
-                                                    var blink_#{tuner.id.replace('-','_')} = document.getElementById(`tuner-#{tuner.id}`).querySelector('.blink');
-                                                    blink_timer_#{tuner.id.replace('-','_')} = setInterval(function () {
-                                                        blink_#{tuner.id.replace('-','_')}.style.visibility = (blink_#{tuner.id.replace('-','_')}.style.visibility == 'hidden' ? '' : 'hidden');
-                                                    }, 1000);
                                 else if (tuner.channel)
                                     .m-0.text-overflow.align-items-center.d-flex
                                         .col.p-0

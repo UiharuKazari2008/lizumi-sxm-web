@@ -1,8 +1,8 @@
-const channelsModel = $("#channelTune");
-const channelsBody = $("#channelList");
-const zonesModel = $("#zoneManager");
-const zonesBody = $("#zoneContent");
-const renameModel = $("#renameFile");
-const renameGuid = $("#renameFileGuid");
-const renameInput = $("#renameFileInput");
-const renameChannel = $("#renameFileChannel");
+channelsModel = $("#channelTune");
+channelsBody = $("#channelList");
+zonesModel = $("#zoneManager");
+zonesBody = $("#zoneContent");
+renameModel = $("#renameFile");
+renameGuid = $("#renameFileGuid");
+renameInput = $("#renameFileInput");
+renameChannel = $("#renameFileChannel");
