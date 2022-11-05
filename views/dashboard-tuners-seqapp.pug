@@ -174,18 +174,25 @@ div
                                         i.fas.fa-eject
 
                             .btn-group(style="margin-left: auto")
+                                if (tuner.digital)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Reboot Device" onClick=`sendAPIRequest("configure/reboot/${tuner.id}")`)
+                                        i.fas.fa-power-off
                                 if (tuner.working)
                                     a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Cancel current job" onClick=`sendAPIRequest("pending/remove?guid=${tuner.working.guid}")`)
                                         i.fas.fa-trash-alt
-                                else if (tuner.record_only)
-                                    a.btn.btn-danger.btn-sm.px-2.disabled(href='#_')
-                                        i.fas.fa-trash-alt
+                                else if (tuner.locked)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Unlock Device" onClick=`sendAPIRequest("configure/unlock/${tuner.id}")`)
+                                        i.fas.fa-lock-open
+                                else
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Lock Device (Disabled Recording)" onClick=`sendAPIRequest("configure/lock/${tuner.id}")`)
+                                        i.fas.fa-lock
 
                                 if (tuner.history)
                                     a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select an event of song to record" onClick=`getPlaylist(1, "tuner-${tuner.id}")`)
                                         i.fas.fa-th-list
                                     //a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Restart the current event or song" onClick=`sendAPIRequest("play/${tuner.channel.id}/${tuner.nowPlaying.guid}")`)
                                         i.fas.fa-backward-fast
+                                if (tuner.channel)
                                     a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Record the current event or song" onClick=`sendAPIRequest("pending/add?guid=${tuner.nowPlaying.guid}")` class=`${(!tuner.channel || tuner.locked) ? 'disabled' : ''}`)
                                         i.fas.fa-voicemail
     if (eventList && eventList.length > 0)
