@@ -7,7 +7,7 @@ div
                         clearInterval(timer_#{tuner.id.replace('-','_')})
                     if (typeof blink_timer_#{tuner.id.replace('-','_')} !== 'undefined')
                         clearInterval(blink_timer_#{tuner.id.replace('-','_')})
-                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.locked) ? 'bg-danger' : (tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-gray-900 tuner-standby'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
+                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-gray-900 tuner-standby'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
                     .row.card-header.align-items-center.m-0.d-flex.bg-transparent
                         .col.small.text-white.d-flex.p-0.align-items-center
                             if (tuner.digital)
@@ -28,10 +28,6 @@ div
                                     span Timeshift
                                     if (tuner.working && tuner.working.jobCount > 1)
                                         span.pl-1 (#{tuner.working.jobCount})
-                            else if (tuner.locked)
-                                .small.text-white.card-header-pills.badge.bg.bg-black.ml-1
-                                    i.fas.fa-lock.pr-1
-                                    span Locked
                     .card-body.position-relative.w-100.h-100(style=`padding: 0.7em;`)
                         //if (tuner.channel && tuner.channel.image)
                             div.position-absolute(style="top: 0; left: 0; padding: 0.7em; height: inherit; width: inherit;")
@@ -156,6 +152,12 @@ div
                                             .badge.bg-white(style="color: red")
                                                 i.fas.fa-circle.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
                                                 | LIVE
+                                else if (tuner.locked)
+                                    .m-0.text-overflow.align-items-center.d-flex
+                                        .col.p-0
+                                            .badge.bg-black.text-white
+                                                i.fas.fa-lock.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                                | DISABLED
                                 else
                                     .m-0.text-overflow.align-items-center.d-flex
                                         .col.p-0
@@ -164,13 +166,20 @@ div
                                                 | STANDBY
                     .card-footer.p-2.bg-black.border-0
                         .align-items-center.justify-content-between.d-flex
-                            if (!tuner.record_only)
-                                .btn-group
+                            .btn-group
+                                if (!tuner.record_only)
                                     a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Listen to this device" onClick=`sendAPIRequest("source/${tuner.id}")` class=`${(tuner.active || !tuner.channel) ? (tuner.active) ? 'disabled bg-success' :'disabled' : ''}` )
                                         i.fas.fa-headphones
                                     a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select a channel to tune to" onClick=`openTuner("${tuner.id}", ${(tuner.digital) ? 'true' : 'false'})` class=`${(tuner.working || tuner.locked) ? 'disabled' : ''}`)
                                         i.fas.fa-hashtag
-                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Deactivate this tuner (Detune)" class=`${(!tuner.channel || tuner.working || tuner.locked) ? 'disabled' : ''}` onClick=`sendAPIRequest("detune/${tuner.id}")`)
+                                if (tuner.locked)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Unlock Device" onClick=`sendAPIRequest("configure/unlock/${tuner.id}")`)
+                                        i.fas.fa-lock-open
+                                else
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Lock Device (Disabled Recording and Tuning)" onClick=`sendAPIRequest("configure/lock/${tuner.id}")`)
+                                        i.fas.fa-lock
+                                if (!tuner.record_only)
+                                    a.btn.btn-sm.px-2(href='#_' tooltip="Deactivate this tuner (Detune)" class=`${(!tuner.channel || tuner.working || tuner.locked) ? 'btn-dark disabled' : 'btn-danger'}` onClick=`sendAPIRequest("detune/${tuner.id}")`)
                                         i.fas.fa-eject
 
                             .btn-group(style="margin-left: auto")
@@ -180,20 +189,14 @@ div
                                 if (tuner.working)
                                     a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Cancel current job" onClick=`sendAPIRequest("pending/remove?guid=${tuner.working.guid}")`)
                                         i.fas.fa-trash-alt
-                                else if (tuner.locked)
-                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Unlock Device" onClick=`sendAPIRequest("configure/unlock/${tuner.id}")`)
-                                        i.fas.fa-lock-open
-                                else
-                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Lock Device (Disabled Recording)" onClick=`sendAPIRequest("configure/lock/${tuner.id}")`)
-                                        i.fas.fa-lock
 
                                 if (tuner.history)
                                     a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Select an event of song to record" onClick=`getPlaylist(1, "tuner-${tuner.id}")`)
                                         i.fas.fa-th-list
                                     //a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Restart the current event or song" onClick=`sendAPIRequest("play/${tuner.channel.id}/${tuner.nowPlaying.guid}")`)
                                         i.fas.fa-backward-fast
-                                if (tuner.channel)
-                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Record the current event or song" onClick=`sendAPIRequest("pending/add?guid=${tuner.nowPlaying.guid}")` class=`${(!tuner.channel || tuner.locked) ? 'disabled' : ''}`)
+                                if (tuner.channel && !tuner.record_only)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Record the current event or song" onClick=`sendAPIRequest("pending/add?guid=${tuner.nowPlaying.guid}")` class=`${(tuner.locked) ? 'disabled' : ''}`)
                                         i.fas.fa-voicemail
     if (eventList && eventList.length > 0)
         .row.px-3.pl-1
