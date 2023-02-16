@@ -11,24 +11,24 @@ div
                     .card-body.position-relative.w-100.h-100(style=`padding: 0.7em;`)
                         div.position-absolute(style="display: contents;")
                             div.channel-icon(style="height: 88.4px")
-                                h4.text-overflow
+                                h4.text-overflow.btn-group
                                     if (input.actions && input.actions.playpause)
-                                        a.btn.btn-success.px-2(href='#_' tooltip="Play/Pause" onClick=`sendAPIRequest("direct_action/${input.id}/playpause")`)
+                                        a.btn.btn-success.px-3(href='#_' tooltip="Play/Pause" onClick=`sendAPIRequest("direct_action/${input.id}/playpause")`)
                                             i.fas.fa-play-pause
                                     if (input.actions && input.actions.play)
-                                        a.btn.btn-success.px-2(href='#_' tooltip="Play" onClick=`sendAPIRequest("direct_action/${input.id}/play")`)
+                                        a.btn.btn-success.px-3(href='#_' tooltip="Play" onClick=`sendAPIRequest("direct_action/${input.id}/play")`)
                                             i.fas.fa-play
                                     if (input.actions && input.actions.pause)
-                                        a.btn.btn-warning.px-2(href='#_' tooltip="Pause" onClick=`sendAPIRequest("direct_action/${input.id}/pause")`)
+                                        a.btn.btn-warning.px-3(href='#_' tooltip="Pause" onClick=`sendAPIRequest("direct_action/${input.id}/pause")`)
                                             i.fas.fa-pause
                                     if (input.actions && input.actions.stop)
-                                        a.btn.btn-danger.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/stop")`)
+                                        a.btn.btn-danger.px-3(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/stop")`)
                                             i.fas.fa-stop
                                     if (input.actions && input.actions.prev)
-                                        a.btn.btn-dark.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/prev")`)
+                                        a.btn.btn-primary.px-3(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/prev")`)
                                             i.fas.fa-backward
                                     if (input.actions && input.actions.next)
-                                        a.btn.btn-dark.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/next")`)
+                                        a.btn.btn-primary.px-3(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/next")`)
                                             i.fas.fa-forward
                                 div
                                     .btn-group
