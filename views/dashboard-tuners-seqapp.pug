@@ -10,14 +10,76 @@ div
                         .col-auto.d-flex.p-0.align-items-center
                     .card-body.position-relative.w-100.h-100(style=`padding: 0.7em;`)
                         div.position-absolute(style="display: contents;")
-
+                            div.channel-icon
+                                h4.text-overflow
+                                    span.badge.bg-black.font-digital(style="margin-right: 0.5em") ---
+                                div
+                                    if (input.actions && input.actions.shuffle)
+                                        a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Music Scan" onClick=`sendAPIRequest("direct_action/${input.id}/shuffle")`)
+                                            i.fas.fa-shuffle
+                                    if (input.actions && input.actions.repeat)
+                                        a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Music Scan" onClick=`sendAPIRequest("direct_action/${input.id}/repeat")`)
+                                            i.fas.fa-repeat
+                                    if (input.actions && input.actions.scroll)
+                                        a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Scroll Display" onClick=`sendAPIRequest("direct_action/${input.id}/scroll")`)
+                                            i.fas.fa-message-text
+                                    if (input.actions && input.actions.mscan)
+                                        a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Music Scan" onClick=`sendAPIRequest("direct_action/${input.id}/mscan")`)
+                                            i.fas.fa-magnifying-glass
+                                    //p.m-0.text-overflow ​
+                                    //p.m-0.text-overflow ​
+                            div
+                                else if (input.active)
+                                    .m-0.text-overflow.align-items-center.d-flex
+                                        .col.p-0
+                                            .badge.bg-white(style="color: darkgreen").mr-1
+                                                i.fas.fa-play.pr-1(style="font-size: 0.8em; padding-bottom: 0.05em;")
+                                                | ACTIVE
+                                else if (input.locked)
+                                    .m-0.text-overflow.align-items-center.d-flex
+                                        .col.p-0
+                                            .badge.bg-black.text-white
+                                                i.fas.fa-lock.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                                | DISABLED
+                                else
+                                    .m-0.text-overflow.align-items-center.d-flex
+                                        .col.p-0
+                                            .badge.bg-black.text-white
+                                                i.fas.fa-moon.pr-1(style="font-size: 0.8em; padding-bottom: 0.1em;")
+                                                | STANDBY
                     .card-footer.p-2.bg-black.border-0
                         .align-items-center.justify-content-between.d-flex
                             .btn-group
                                 a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Listen to this device" onClick=`sendAPIRequest("direct_source/${input.id}")` class=`${(input.active) ? 'disabled bg-success' : ''}` )
                                     i.fas.fa-headphones
-
+                                if (input.actions && input.actions.prev)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/prev")`)
+                                        i.fas.fa-backward
+                                if (input.actions && input.actions.playpause)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Play/Pause" onClick=`sendAPIRequest("direct_action/${input.id}/playpause")`)
+                                        i.fas.fa-play-pause
+                                if (input.actions && input.actions.play)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Play" onClick=`sendAPIRequest("direct_action/${input.id}/play")`)
+                                        i.fas.fa-play
+                                if (input.actions && input.actions.pause)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Pause" onClick=`sendAPIRequest("direct_action/${input.id}/pause")`)
+                                        i.fas.fa-pause
+                                if (input.actions && input.actions.stop)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/stop")`)
+                                        i.fas.fa-stop
+                                if (input.actions && input.actions.next)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Stop" onClick=`sendAPIRequest("direct_action/${input.id}/next")`)
+                                        i.fas.fa-forward
                             .btn-group(style="margin-left: auto")
+                                if (input.actions && input.actions.power)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Toggle Power Device" onClick=`sendAPIRequest("direct_action/${input.id}/power")`)
+                                        i.fas.fa-power-off
+                                if (input.actions && input.actions.eject)
+                                    a.btn.btn-dark.btn-sm.px-2(href='#_' tooltip="Eject" onClick=`sendAPIRequest("direct_action/${input.id}/eject")`)
+                                        i.fas.fa-eject
+                                if (input.actions && input.actions.record)
+                                    a.btn.btn-danger.btn-sm.px-2(href='#_' tooltip="Record" onClick=`sendAPIRequest("direct_action/${input.id}/record")`)
+                                        i.fas.fa-circle
         each tuner in tuners
             .col-xl-4.col-md-6.mb-3
                 .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-gray-900 tuner-standby'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
