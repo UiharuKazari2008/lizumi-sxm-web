@@ -132,7 +132,7 @@ function getJobs(page) {
     }
     return false;
 }
-
+let refreshCalled = null;
 function sendAPIRequest(commandUri) {
     let _url = new URL(`${document.location.origin}/api/${commandUri}`);
     if (typeof SEQ_APP_URL !== 'undefined')
@@ -149,10 +149,13 @@ function sendAPIRequest(commandUri) {
         contentType: false,
         headers: {},
         success: function (response, textStatus, xhr) {
-            setTimeout(getTunersStatus, 1000)
-            notifyCenter("success", "", "", response);
+            clearTimeout(refreshCalled);
+            refreshCalled = null;
+            refreshCalled = setTimeout(getTunersStatus, 1000);
         },
         error: function (xhr, textStatus) {
+            clearTimeout(refreshCalled);
+            refreshCalled = null;
             notifyCenter("danger", "", "", xhr.responseText);
         }
     });
