@@ -20,11 +20,6 @@ div
                             .btn-group(style="margin-left: auto")
         each tuner in tuners
             .col-xl-4.col-md-6.mb-3
-                script.
-                    if (typeof timer_#{tuner.id.replace('-','_')} !== 'undefined')
-                        clearInterval(timer_#{tuner.id.replace('-','_')})
-                    if (typeof blink_timer_#{tuner.id.replace('-','_')} !== 'undefined')
-                        clearInterval(blink_timer_#{tuner.id.replace('-','_')})
                 .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-gray-900 tuner-standby'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
                     .row.card-header.align-items-center.m-0.d-flex.bg-transparent
                         .col.small.text-white.d-flex.p-0.align-items-center

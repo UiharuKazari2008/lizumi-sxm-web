@@ -206,7 +206,7 @@ router.get(['/', '/devices'], simpleAuth, function(req, res, next) {
 router.get('/deviceStatus', simpleAuth, async (req, res) => {
   if (tunerList.length > 0 || inputList.length > 0) {
     res.status(200).render('dashboard-tuners' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
-      tuners: deviceStatus,
+      tuners: deviceStatus.tuners,
       inputs: inputList,
       msToTime: function (s) {
         // Pad to 2 or 3 digits, default is 2
