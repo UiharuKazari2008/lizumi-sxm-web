@@ -7,6 +7,7 @@ let deviceStatus = []
 let roomStatus = {}
 let channelList = []
 let tunerList = []
+let inputList = []
 let eventItems = []
 let jobItems = {}
 let jobItemsParsed = []
@@ -16,6 +17,7 @@ let timerDeviceStatus = null;
 async function updateDeviceStatus() {
   clearTimeout(timerDeviceStatus);
   timerDeviceStatus = null;
+  // Devices
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/devices`,
@@ -28,7 +30,8 @@ async function updateDeviceStatus() {
         try {
           //console.log("Updated Status")
           deviceStatus = JSON.parse(body)
-          tunerList = deviceStatus.filter(e => e.history)
+          tunerList = deviceStatus.tuners.filter(e => e.history)
+          inputList = deviceStatus.inputs
           resolve(true)
         } catch (err) {
           console.error(err)
@@ -37,6 +40,7 @@ async function updateDeviceStatus() {
       }
     })
   })
+  // Rooms
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/rooms`,
@@ -64,6 +68,7 @@ let updateTimer = null
 async function getDeviceStatus() {
   clearTimeout(updateTimer);
   let timeoutTime = 30000
+  // Events
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/events`,
@@ -87,6 +92,7 @@ async function getDeviceStatus() {
       }
     })
   })
+  // Jobs
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/jobs`,
@@ -145,6 +151,7 @@ async function getDeviceStatus() {
       }
     })
   })
+  // Channels
   await new Promise((resolve) => {
     request.get({
       url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/channels`,
@@ -200,6 +207,7 @@ router.get('/deviceStatus', simpleAuth, async (req, res) => {
   if (deviceStatus.length > 0) {
     res.status(200).render('dashboard-tuners' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       tuners: deviceStatus,
+      inputs: inputList,
       msToTime: function (s) {
         // Pad to 2 or 3 digits, default is 2
         function pad(n, z) {
@@ -301,6 +309,7 @@ router.get('/eventList', simpleAuth, async (req, res) => {
     res.status(200).render('table-playlist' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
       channels: channelList,
       tuners: tunerList,
+      inputs: inputList,
       page: 1, pageCount: 1,
       type: req.query.type || "0",
       filter: req.query.filter || "all"
