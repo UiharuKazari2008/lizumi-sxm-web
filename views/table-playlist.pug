@@ -51,7 +51,7 @@ div
                     .row.d-flex.justify-content-between.mb-2.mb-sm-0
                         .col.d-flex.align-items-center
                             if (event.channelInfo)
-                                .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
+                                .badge.bg-dark
                                     span.text-monospace #{event.channel}
                                     span.small.ps-1 #{event.channelInfo.name}
                             else if (event.channel)

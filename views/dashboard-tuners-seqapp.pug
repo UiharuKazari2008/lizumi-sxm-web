@@ -283,7 +283,7 @@ div
                         .list-group-item.list-group-item-action.flex-column.align-items-start.text-white.py-2.bg-light(style=`${(event.event.duration === 0) ? 'background: darkred !important;' : ''}`)
                             .row.d-flex.justify-content-between.mb-2.mb-sm-0
                                 .col.align-items-center.d-inline-flex
-                                    .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
+                                    .badge.bg-dark
                                         span.text-monospace #{event.channel}
                                         span.small.ps-1 #{event.channelInfo.name}
                                     //img.pr-2(src=`data:image/png;base64,${event.channelInfo.image}` height="24px")

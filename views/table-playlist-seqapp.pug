@@ -62,7 +62,7 @@ body(style="overflow-x: hidden;")
                                 .row.d-flex.justify-content-between.mb-2.mb-sm-0
                                     .col.align-items-center.d-inline-flex
                                         if (event.channelInfo)
-                                            .badge.bg-dark(style=`${(event.channelInfo.color) ? 'background: ' + event.channelInfo.color + '!important;' : ''}`)
+                                            .badge.bg-dark
                                                 //span.text-monospace #{event.channel}
                                                 span.small #{event.channelInfo.name}
                                         else if (event.channel)
