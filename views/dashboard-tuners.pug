@@ -25,7 +25,7 @@ div
     .row.p-3.pt-0
         each tuner in tuners
             .col-xl-4.col-md-6.mb-3
-                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.locked) ? 'bg-danger' : (tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-secondary'}` style=`${(tuner.channel && tuner.channel.color) ? 'background: ' + tuner.channel.color + '!important;' : ''}`)
+                .card.text-white(id=`tuner-${tuner.id}` class=`${(tuner.locked) ? 'bg-danger' : (tuner.active) ? 'bg-primary' : (tuner.channel) ? 'bg-success' : 'bg-secondary'}`)
                     .row.card-header.align-items-center.m-0.d-none.d-sm-flex
                         .col.small.text-white.d-flex.p-0.align-items-center
                             if (tuner.digital)
