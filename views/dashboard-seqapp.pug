@@ -83,7 +83,7 @@ body(style="overflow-x: hidden;")
             a.user-menu-item(title="Show Tuners and whats live" href=`#${baseUrl}`)
                 i.fa-light.fa-satellite.fa-fw
                 | Dashboard
-            a.user-menu-item(title="Open Tuner Menu" href='#_' class="collapsed" data-toggle="collapse" data-target="#radioManagerChannels")
+            a.user-menu-item(title="Open Tuner Menu" href='#_' onClick=`openTuner();`)
                 i.fa-light.fa-hashtag.fa-fw
                 | Tune
             a.user-menu-item(title="Manage Audio Outputs" href='#_' onClick=`openZones();`)
