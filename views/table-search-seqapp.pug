@@ -49,11 +49,11 @@ body(style="overflow-x: hidden;")
                                             span.badge.bg-success #{event.channel}
                                         if (event.onlyTune)
                                             span.badge.bg-success.ml-1
-                                                i.fas.fa-play.ml-1
+                                                i.fas.fa-play.mr-1
                                                 span Playback
                                         else
                                             span.badge.bg-danger.ml-1
-                                                i.fas.fa-voicemail.ml-1
+                                                i.fas.fa-voicemail.mr-1
                                                 span Record
                                         if (event.digitalOnly)
                                             i.fas.fa-wifi.ml-2(tooltip="Record/Play only on digital tuners")
@@ -72,19 +72,19 @@ body(style="overflow-x: hidden;")
                                             i.fas.fa-rabbit-running.mr-2(tooltip="Fast Trigger: Recording is started within 60 Seconds of match")
                                         if (event.duration)
                                             span.badge.bg-info.mr-2(tooltip="Must be longer then this duration")
-                                                i.fas.fa-timer.ml-1
-                                                span >= #{event.duration}m
+                                                i.fas.fa-timer.mr-1
+                                                span >= 00:#{event.duration}
                                         if (event.beforeHour)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
-                                                i.fas.fa-clock.ml-1
-                                                span BEFORE #{event.beforeHour}H
+                                                i.fas.fa-clock.mr-1
+                                                span BEFORE #{event.beforeHour}:00
                                         if (event.afterHour)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
-                                                i.fas.fa-clock.ml-1
-                                                span AFTER #{event.afterHour}H
+                                                i.fas.fa-clock.mr-1
+                                                span AFTER #{event.afterHour}:00
                                         if (event.dayOfWeek)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
-                                                i.fas.fa-calendar-day.ml-1
+                                                i.fas.fa-calendar-day.mr-1
                                                 span #{event.dayOfWeek}
                                 .row.d-flex.justify-content-between.flex-sm-row.flex-column
                                     .col
@@ -98,9 +98,9 @@ body(style="overflow-x: hidden;")
                                             i.fas.fa-magnifying-glass.mr-2
                                         span.overflow-hidden #{(event.title || event.artist || event.album) ? (((event.artist) ? event.artist + ' - ' : "% - ") + ((event.title) ? event.title : "%") + ((event.album) ? " (" + event.album + ")" : " (%)") + ((event.search) ? " " + event.search : "")) : event.search}
                                     .col-auto.d-inline-flex.align-items-center
-                                        a.px-2(onClick=`openEventEdit(index)`)
+                                        a.px-2(onClick=`openEventEdit(#{index})`)
                                             i.fas.fa-edit
-                                        a.px-2(onClick=`trashEvent(index)`)
+                                        a.px-2(onClick=`trashEvent(#{index})`)
                                             i.fas.fa-trash
                 else
                     h3 No Results
