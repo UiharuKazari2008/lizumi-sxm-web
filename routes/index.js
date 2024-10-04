@@ -3,6 +3,7 @@ var express = require('express');
 const request = require("request");
 const config = require("./../config.json");
 var router = express.Router();
+let xmConfig = {};
 let deviceStatus = []
 let roomStatus = {}
 let channelList = []
@@ -12,6 +13,34 @@ let eventItems = []
 let jobItems = {}
 let jobItemsParsed = []
 let jobCompleted = []
+
+let timerConfig = null;
+async function updateConfig() {
+  clearTimeout(timerConfig);
+  timerConfig = null;
+  await new Promise((resolve) => {
+    request.get({
+      url: `http://${(config.backend) ? config.backend : 'localhost:9080'}/status/config`,
+      timeout: 60000
+    }, async function (err, resReq, body) {
+      if (err) {
+        console.error(err);
+        resolve(false)
+      } else {
+        try {
+          //console.log("Updated Status")
+          xmConfig = JSON.parse(body)
+          resolve(true)
+        } catch (err) {
+          console.error(err)
+          resolve(false)
+        }
+      }
+    })
+  })
+  timerConfig = setTimeout( updateConfig, 60000)
+}
+updateConfig();
 
 let timerDeviceStatus = null;
 async function updateDeviceStatus() {
@@ -351,6 +380,27 @@ router.get('/jobList', simpleAuth, async (req, res) => {
     })
   }
 });
+router.get('/searchList', simpleAuth, async (req, res) => {
+  if (xmConfig.autosearch_terms && xmConfig.autosearch_terms.length > 0) {
+    res.status(200).render('table-search' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
+      searchList: xmConfig.autosearch_terms.map(e => {
+        let r ={
+          ...e,
+          channelMeta: channelList.filter(f => f.number === e.channel)[0]
+        }
+        return r;
+      }),
+      channels: channelList,
+      page: 1, pageCount: 1,
+      destinations: xmConfig.destinations
+    })
+  } else {
+    res.status(200).render('table-search' + (req.header("Seq-BaseURL") ? '-seqapp' : ''), {
+      page: 1, pageCount: 1,
+      destinations: xmConfig.destinations
+    })
+  }
+})
 
 router.get('/api/*', simpleAuth, async (req, res) => {
   request.get({
