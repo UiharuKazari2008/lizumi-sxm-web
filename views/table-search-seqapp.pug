@@ -73,19 +73,19 @@ body(style="overflow-x: hidden;")
                                         if (event.duration)
                                             span.badge.bg-info.mr-2(tooltip="Must be longer then this duration")
                                                 i.fas.fa-timer.ml-1
-                                                span >= ${event.duration}m
+                                                span >= #{event.duration}m
                                         if (event.beforeHour)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
                                                 i.fas.fa-clock.ml-1
-                                                span BEFORE ${event.beforeHour}H
+                                                span BEFORE #{event.beforeHour}H
                                         if (event.afterHour)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
                                                 i.fas.fa-clock.ml-1
-                                                span AFTER ${event.afterHour}H
+                                                span AFTER #{event.afterHour}H
                                         if (event.dayOfWeek)
                                             span.badge.bg-info.mr-2(tooltip="Must be on this day of the week")
                                                 i.fas.fa-calendar-day.ml-1
-                                                span ${event.dayOfWeek}
+                                                span #{event.dayOfWeek}
                                 .row.d-flex.justify-content-between.flex-sm-row.flex-column
                                     .col
                                         if (event.title)
